@@ -1,0 +1,242 @@
+@font-face {
+  font-family: "MoveBold";
+  src: local("MoveBold"), url(../fonts/MoveBold.otf);
+}
+
+@font-face {
+  font-family: "MoveMedium";
+  src: local("MoveMedium"), url(../fonts/MoveMedium.otf);
+}
+
+@font-face {
+  font-family: "MoveRegular";
+  src: local("MoveRegular"), url(../fonts/MoveRegular.ttf);
+}
+
+@font-face {
+  font-family: "MoveLight";
+  src: local("MoveLight"), url(../fonts/MoveLight.ttf);
+}
+
+@font-face {
+  font-family: "MoveTextBold";
+  src: local("MoveTextBold"), url(../fonts/UberMoveTextBold.otf);
+}
+
+@font-face {
+  font-family: "MoveTextMedium";
+  src: local("UberMoveTextMedium"), url(../fonts/UberMoveTextMedium.otf);
+}
+
+@font-face {
+  font-family: "MoveTextRegular";
+  src: local("UberMoveTextRegular"), url(../fonts/UberMoveTextRegular.otf);
+}
+
+@font-face {
+  font-family: "MoveTextLight";
+  src: local("UberMoveTextLight"), url(../fonts/UberMoveTextLight.otf);
+}
+
+.container {
+  font-family: "MoveTextRegular", sans-serif;
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+  height: 100vmin;
+}
+
+.contentContainer {
+  background-color: #f0f0f0;
+  margin-left: 250px;
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 100px;
+}
+
+/* Header */
+.headerContainer {
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+  height: 50px;
+}
+
+.headerTitle {
+  font-family: 'MoveTextBold', sans-serif;
+  font-size: 22px;
+}
+
+.otherSideHeader {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 18px;
+  padding-left: 10px;
+  padding-top: 4px;
+  color: #096ed4;
+}
+
+.rightCategoriesDrivers {
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+  width: 530px;
+  justify-content: space-between;
+}
+
+.rightCategoriesDrivers div {
+  border: 1px solid #d0d0d0;
+  min-width: 90px;
+  height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #d0d0d0;
+  border-radius: 3px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Header */
+
+/* Table main */
+.tableSuperContainer {
+  padding: 20px;
+}
+
+.tableMain {
+  border: 1px solid #f0f0f0;
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.tableMain td {
+  border: 1px solid #d0d0d0;
+  padding: 10px;
+}
+
+.headerTable {
+  background-color: #fff;
+  font-family: 'MoveTextBold';
+  font-size: 14px;
+}
+
+.rowElementTable {
+  font-size: 15px;
+}
+
+.rowElementTable:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.userProfileContainer {
+  border: 1px solid #d0d0d0;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+}
+
+.userProfileContainer>img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Table main */
+
+
+/* Focus container */
+.focusedContainer {
+  border: 1px solid #d0d0d0;
+  background-color: #fff;
+  padding-top: 25px;
+}
+
+.profileBrief {
+  border-bottom: 1px solid #d0d0d0;
+  display: flex;
+  flex-direction: row;
+  padding: 25px;
+  padding-bottom: 45px;
+  margin-bottom: 40px;
+}
+
+.profilePicBrief {
+  border: 1px solid #d0d0d0;
+  width: 100px;
+  height: 100px;
+}
+
+.textualInfosBrief {
+  margin-right: 50px;
+}
+
+.infoPlusLabelContainer {
+  /* border: 1px solid black; */
+  margin-left: 25px;
+  margin-bottom: 15px;
+}
+
+.labelInfoPlusL {
+  font-family: 'MoveTextLight', sans-serif;
+  font-size: 13px;
+}
+
+.titleInfoPlusL {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 15px;
+  padding-top: 3px;
+}
+
+.basicTitle {
+  font-family: 'MoveTextBold', sans-serif;
+  color: #545b64a8;
+  font-size: 13px;
+  padding-left: 25px;
+}
+
+.documentNode {
+  border: 1px solid #11A05A;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 150px;
+  justify-content: space-between;
+  height: 45px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 3px;
+  font-size: 15px;
+  color: #11A05A;
+  font-family: 'MoveTextMedium', sans-serif;
+  cursor: pointer;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.documentNode:hover {
+  background-color: #11A05A;
+  color: #fff;
+}
+
+.suspendAccButton {
+  font-family: 'MoveTextMedium', sans-serif;
+  color: #b22222;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 17px;
+  /* border: 1px solid black; */
+  width: 240px;
+}
+
+/* Focus container */
