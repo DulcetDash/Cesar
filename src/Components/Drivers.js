@@ -9,6 +9,7 @@ import {
   ArrowForwardIosSharp,
 } from "@material-ui/icons";
 import toast, { Toaster } from "react-hot-toast";
+import ImageViewer from "react-simple-image-viewer";
 const axios = require("axios").default;
 
 class Drivers extends Component {
@@ -20,89 +21,8 @@ class Drivers extends Component {
       selectedDriversCategory: "ride", //can be ride, delivery, shopping or awaiting
       hasError: false,
       usersData: { registered: [], awaiting: [] },
-      selectedDriverFocus: {
-        identification_data: {
-          date_updated: {},
-          rating: 5,
-          copy_id_paper: "id_paper.pdf",
-          profile_picture: "user.png",
-          banking_details: { bank_name: "FNB", account_number: "237823473843" },
-          driver_licence_doc: "licence.pdf",
-          title: "Mr",
-          copy_public_permit: "public_permit.pdf",
-          copy_blue_paper: "blue_paper.pdf",
-          isAccount_verified: true,
-          copy_white_paper: "white_paper.pdf",
-          personal_id_number: "N778821212IK",
-          paymentNumber: 678998,
-        },
-        date_updated: "2022-04-11T13:00:38.000Z",
-        gender: "M",
-        account_verifications: {
-          phone_verification_secrets: {
-            otp: 92123,
-            date_sent: "2022-06-30T15:25:11.000Z",
-          },
-        },
-        payments_information: {},
-        date_registered: "2020-05-11T09:45:00.000Z",
-        operation_clearances: "SHOPPING",
-        passwod: "1234567",
-        owners_information: false,
-        surname: "Pohembe",
-        driver_fingerprint:
-          "91ae265bca710a49756d90e382f9591dceba4b26cc03c01aaca3828145376321f9b8b401ae7e1efa41c99e7f210ecc191c62b2dc7bcda566e312378e1a1fdf1b",
-        suspension_infos: [
-          {
-            date: {},
-            reason: "PAID_COMISSION",
-            state: false,
-            bot_locker: "Junkstem",
-          },
-        ],
-        suspension_message: "false",
-        name: "Joseph",
-        phone_number: "+264856997167",
-        _id: "5fce6efe962c92a002ef1e79",
-        cars_data: [
-          {
-            date_updated: {},
-            permit_number: "23543-7748-993N",
-            taxi_number: "H265",
-            max_passengers: 4,
-            taxi_picture: "default.png",
-            car_brand: "Toyota Corolla",
-            vehicle_type: "normalTaxiEconomy",
-            plate_number: "N25578W",
-            car_fingerprint: "dkjsdksjd2930293dskdjksdj20",
-            date_registered: {},
-          },
-        ],
-        isDriverSuspended: false,
-        operational_state: {
-          last_location: {
-            country: "Namibia",
-            location_name: "Inner City Church",
-            date_updated: {},
-            geographic_extent: false,
-            prev_coordinates: { latitude: "-22.55928", longitude: "17.07581" },
-            city: "Windhoek",
-            street: "Johann Albrecht Street",
-            coordinates: { latitude: "-22.40928", longitude: "17.08881" },
-            suburb: "Windhoek West",
-          },
-          push_notification_token: "abc",
-          default_selected_car: {
-            vehicle_type: "normalTaxiEconomy",
-            date_Selected: {},
-            car_fingerprint: "dkjsdksjd2930293dskdjksdj20",
-            max_passengers: 4,
-          },
-          status: "online",
-        },
-        regional_clearances: ["Windhoek"],
-        email: "alexpohembe@gmail.com",
-      }, //The driver data selected
+      shouldShowFilePreview: false, //TO show thye file preview or not
+      selectedDriverFocus: false, //The driver data selected
     };
   }
 
@@ -118,7 +38,19 @@ class Drivers extends Component {
           admin_fp: "abc",
         })
         .then(function (response) {
-          console.log(response.data);
+          // console.log(response.data);
+
+          if (that.state.selectedDriverFocus !== false) {
+            //Has selected a driver
+            response.data.response.registered.map((el) => {
+              if (el._id === that.state.selectedDriverFocus._id) {
+                // console.log("Updated the selected driver");
+                that.setState({
+                  selectedDriverFocus: el,
+                });
+              }
+            });
+          }
 
           that.setState({
             hasError: false,
@@ -354,7 +286,11 @@ class Drivers extends Component {
                 let state = user["operational_state"]["status"];
 
                 return (
-                  <tr key={index} className={classes.rowElementTable}>
+                  <tr
+                    key={index}
+                    className={classes.rowElementTable}
+                    onClick={() => this.updateSelectedDriverFocus(user)}
+                  >
                     <td style={{ fontFamily: "MoveTextMedium" }}>
                       {index + 1}
                     </td>
@@ -419,7 +355,11 @@ class Drivers extends Component {
                 let state = user["operational_state"]["status"];
 
                 return (
-                  <tr key={index} className={classes.rowElementTable}>
+                  <tr
+                    key={index}
+                    className={classes.rowElementTable}
+                    onClick={() => this.updateSelectedDriverFocus(user)}
+                  >
                     <td style={{ fontFamily: "MoveTextMedium" }}>
                       {index + 1}
                     </td>
@@ -482,7 +422,11 @@ class Drivers extends Component {
             {/* Body */}
             {this.state.usersData.awaiting.map((user, index) => {
               return (
-                <tr key={index} className={classes.rowElementTable}>
+                <tr
+                  key={index}
+                  className={classes.rowElementTable}
+                  onClick={() => this.updateSelectedDriverFocus(user)}
+                >
                   <td style={{ fontFamily: "MoveTextMedium" }}>{index + 1}</td>
                   <td>
                     <div className={classes.userProfileContainer}>
@@ -538,7 +482,13 @@ class Drivers extends Component {
         <div className={classes.focusedContainer}>
           {this.renderBasicTitle({ title: "Personal information" })}
           <div className={classes.profileBrief}>
-            <div className={classes.profilePicBrief}>Profile</div>
+            <div className={classes.profilePicBrief}>
+              <img
+                alt="profile"
+                src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${this.state.selectedDriverFocus["identification_data"]["profile_picture"]}`}
+                className={classes.trueBriefImage}
+              />
+            </div>
             <div className={classes.textualInfosBrief}>
               {/* Name */}
               {this.renderInformationWithLabel({
@@ -624,7 +574,13 @@ class Drivers extends Component {
             : this.renderBasicTitle({ title: "Vehicle details" })}
           {isShoppingDriver ? null : (
             <div className={classes.profileBrief}>
-              <div className={classes.profilePicBrief}>Car picture</div>
+              <div className={classes.profilePicBrief}>
+                <img
+                  alt="car"
+                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["cars_data"][0]["taxi_picture"]}`}
+                  className={classes.trueBriefImage}
+                />
+              </div>
               <div className={classes.textualInfosBrief}>
                 {/* Brand */}
                 {this.renderInformationWithLabel({
@@ -676,10 +632,11 @@ class Drivers extends Component {
                 })}
                 {/* Status */}
                 {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedDriverFocus["operational_state"][
-                      "status"
-                    ],
+                  title: this.state.selectedDriverFocus["isDriverSuspended"]
+                    ? "Suspended"
+                    : this.state.selectedDriverFocus["operational_state"][
+                        "status"
+                      ],
                   label: "Status",
                 })}
               </div>
@@ -712,6 +669,11 @@ class Drivers extends Component {
           >
             <div
               className={classes.suspendAccButton}
+              style={
+                this.state.selectedDriverFocus["isDriverSuspended"]
+                  ? { color: process.env.REACT_APP_SECONDARY_COLOR }
+                  : {}
+              }
               onClick={() => {
                 toast.dismiss();
                 toast.loading("Suspending the driver.");
@@ -768,7 +730,222 @@ class Drivers extends Component {
       );
     } //Awaiting approval driver
     else {
-      return <div>Awaiting approval</div>;
+      let isDeliveryOrShoppingDriver =
+        this.state.selectedDriverFocus["nature_driver"] === "COURIER";
+
+      //Registered driver
+      return (
+        <div className={classes.focusedContainer}>
+          {this.renderBasicTitle({ title: "Personal information" })}
+          <div className={classes.profileBrief}>
+            <div className={classes.profilePicBrief}>
+              <img
+                alt="profile"
+                src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["driver_photo"]}`}
+                className={classes.trueBriefImage}
+              />
+            </div>
+            <div className={classes.textualInfosBrief}>
+              {/* Name */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["name"],
+                label: "Name",
+              })}
+              {/* Surname */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["surname"],
+                label: "Surname",
+              })}
+              {/* Gender */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["gender"],
+                label: "Gender",
+              })}
+              {/* Title */}
+              {this.renderInformationWithLabel({
+                title: "Mr",
+                label: "Title",
+              })}
+            </div>
+            {/* 2 */}
+            <div className={classes.textualInfosBrief}>
+              {/* Email */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["email"],
+                label: "Email",
+              })}
+
+              {/* clearance */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["nature_driver"],
+                label: "User type",
+              })}
+              {/* Surname */}
+              {this.renderInformationWithLabel({
+                title: this.getReadableDate(
+                  this.state.selectedDriverFocus["date_applied"]
+                ),
+                label: "Application date",
+              })}
+            </div>
+            {/* 3 */}
+            <div className={classes.textualInfosBrief}>
+              {/* Personal ID */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["city"],
+                label: "City",
+              })}
+              {/* Phone */}
+              {this.renderInformationWithLabel({
+                title: this.state.selectedDriverFocus["phone_number"],
+                label: "Phone number",
+              })}
+              {/* Surname */}
+              {this.renderInformationWithLabel({
+                title:
+                  this.state.selectedDriverFocus["accepted_conditions_details"][
+                    "did_accept_terms"
+                  ] === "true"
+                    ? "Yes"
+                    : "No did not",
+                label: "Did accept the terms",
+              })}
+            </div>
+          </div>
+          {/* Car details */}
+          {this.renderBasicTitle({ title: "Vehicle details" })}
+          {
+            <div className={classes.profileBrief}>
+              <div className={classes.profilePicBrief}>
+                <img
+                  alt="car"
+                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["vehicle_photo"]}`}
+                  className={classes.trueBriefImage}
+                />
+              </div>
+              <div className={classes.textualInfosBrief}>
+                {/* Brand */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedDriverFocus["vehicle_details"][
+                      "brand_name"
+                    ],
+                  label: "Brand",
+                })}
+                {/* Plate no */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedDriverFocus["vehicle_details"][
+                      "plate_number"
+                    ],
+                  label: "Plate number",
+                })}
+                {/* Permit no */}
+                {isDeliveryOrShoppingDriver
+                  ? null
+                  : this.renderInformationWithLabel({
+                      title:
+                        this.state.selectedDriverFocus["vehicle_details"][
+                          "permit_number"
+                        ],
+                      label: "Permit number",
+                    })}
+                {/* Taxi number */}
+                {isDeliveryOrShoppingDriver
+                  ? null
+                  : this.renderInformationWithLabel({
+                      title:
+                        this.state.selectedDriverFocus["vehicle_details"][
+                          "taxi_number"
+                        ],
+                      label: "Taxi number",
+                    })}
+              </div>
+              {/* 2 */}
+              <div className={classes.textualInfosBrief}>
+                {/* Model name */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedDriverFocus["vehicle_details"][
+                      "model_name"
+                    ],
+                  label: "Model",
+                })}
+                {/* Color */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedDriverFocus["vehicle_details"]["color"],
+                  label: "Color",
+                })}
+              </div>
+            </div>
+          }
+
+          {/* Documents */}
+          {this.renderBasicTitle({ title: "Documents" })}
+          <div className={classes.profileBrief} style={{ flexWrap: "wrap" }}>
+            {this.renderDocumentsList({
+              driver_type: "AWAITING",
+            })}
+          </div>
+
+          {/* Authority zone */}
+          {this.renderBasicTitle({ title: "Authority zone" })}
+          <div
+            className={classes.profileBrief}
+            style={{ display: "block", border: "none" }}
+          >
+            <div
+              className={classes.suspendAccButton}
+              style={{
+                color: process.env.REACT_APP_PRIMARY_COLOR,
+                fontFamily: "MoveTextBold",
+              }}
+              onClick={() => {
+                toast.dismiss();
+                toast.loading("Approving the driver.");
+
+                let that = this;
+                console.log({
+                  admin_fp: "abc",
+                  operation:
+                    this.state.selectedDriverFocus["isDriverSuspended"] ===
+                    false
+                      ? "suspended"
+                      : "unsuspend",
+                  driver_id: this.state.selectedDriverFocus["_id"],
+                });
+                axios
+                  .post(
+                    `${process.env.REACT_APP_BRIDGE}/approveDriverAccount`,
+                    {
+                      admin_fp: "abc",
+                      driverData: this.state.selectedDriverFocus,
+                    }
+                  )
+                  .then(function (response) {
+                    console.log(response.data);
+                    toast.dismiss();
+
+                    if (response.data.response === "error")
+                      toast.error("Unable to approve this this.");
+                    else toast.success("Successfully approved!");
+                  })
+                  .catch(function (error) {
+                    console.log(error);
+                    toast.dismiss();
+                    toast.error("Unable to approve this this.");
+                  });
+              }}
+            >
+              Approve account
+            </div>
+            <div className={classes.labelInfoPlusL}>
+              The driver will be able to login, see and accepts new requests.
+            </div>
+          </div>
+        </div>
+      );
     }
   }
 
@@ -778,18 +955,36 @@ class Drivers extends Component {
       case "RIDE":
         return (
           <>
-            {this.renderDocumentNode({ title: "ID paper" })}
-            {this.renderDocumentNode({ title: "Driver license" })}
-            {this.renderDocumentNode({ title: "Public permit" })}
-            {this.renderDocumentNode({ title: "Blue paper" })}
-            {this.renderDocumentNode({ title: "White paper" })}
+            {this.renderDocumentNode({
+              title: "ID paper",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_id_paper"]}`,
+            })}
+            {this.renderDocumentNode({
+              title: "Driver license",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["driver_licence_doc"]}`,
+            })}
+            {this.renderDocumentNode({
+              title: "Public permit",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_public_permit"]}`,
+            })}
+            {this.renderDocumentNode({
+              title: "Blue paper",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_blue_paper"]}`,
+            })}
+            {this.renderDocumentNode({
+              title: "White paper",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_white_paper"]}`,
+            })}
           </>
         );
 
       case "DELIVERY":
         return (
           <>
-            {this.renderDocumentNode({ title: "ID paper" })}
+            {this.renderDocumentNode({
+              title: "ID paper",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_id_paper"]}`,
+            })}
             {/* {this.renderDocumentNode({ title: "Driver license" })} */}
           </>
         );
@@ -797,8 +992,47 @@ class Drivers extends Component {
       case "SHOPPING":
         return (
           <>
-            {this.renderDocumentNode({ title: "ID paper" })}
+            {this.renderDocumentNode({
+              title: "ID paper",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_id_paper"]}`,
+            })}
             {/* {this.renderDocumentNode({ title: "Driver license" })} */}
+          </>
+        );
+
+      case "AWAITING":
+        return (
+          <>
+            {this.renderDocumentNode({
+              title: "ID paper",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["id_photo"]}`,
+            })}
+            {this.renderDocumentNode({
+              title: "Driver license",
+              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["license_photo"]}`,
+            })}
+            {this.state.selectedDriverFocus["documents"]["permit_photo"] ===
+            undefined
+              ? null
+              : this.renderDocumentNode({
+                  title: "Public permit",
+                  url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["permit_photo"]}`,
+                })}
+            {this.state.selectedDriverFocus["documents"]["blue_paper_photo"] ===
+            undefined
+              ? null
+              : this.renderDocumentNode({
+                  title: "Blue paper",
+                  url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["blue_paper_photo"]}`,
+                })}
+            {this.state.selectedDriverFocus["documents"][
+              "white_paper_photo"
+            ] === undefined
+              ? null
+              : this.renderDocumentNode({
+                  title: "White paper",
+                  url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["white_paper_photo"]}`,
+                })}
           </>
         );
 
@@ -823,9 +1057,25 @@ class Drivers extends Component {
   }
 
   //Render document node
-  renderDocumentNode({ title = "Document name" }) {
+  renderDocumentNode({
+    title = "Document name",
+    url = "https://tothefile.comi/",
+  }) {
     return (
-      <div className={classes.documentNode}>
+      <div
+        className={classes.documentNode}
+        onClick={() => this.setState({ shouldShowFilePreview: true })}
+      >
+        {this.state.shouldShowFilePreview === false ? null : (
+          <ImageViewer
+            src={[url]}
+            currentIndex={0}
+            disableScroll={false}
+            closeOnClickOutside={true}
+            backgroundStyle={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+            onClose={() => this.setState({ shouldShowFilePreview: false })}
+          />
+        )}
         <div>{title}</div>
         <ArrowForwardIosSharp style={{ fontSize: "15px" }} />
       </div>

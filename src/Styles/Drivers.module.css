@@ -239,4 +239,10 @@
   width: 240px;
 }
 
+.trueBriefImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Focus container */
