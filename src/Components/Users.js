@@ -127,6 +127,7 @@ class Users extends Component {
                   <td>Profile</td>
                   <td>Name</td>
                   <td>Gender</td>
+                  <td>Phone number</td>
                   <td>Email</td>
                   <td>Status</td>
                   <td>Date registered</td>
@@ -153,6 +154,7 @@ class Users extends Component {
                       </td>
                       <td>{`${user["name"]} ${user["surname"]}`}</td>
                       <td>{user["gender"]}</td>
+                      <td>{user["phone_number"]}</td>
                       <td>{user["email"]}</td>
                       <td
                         style={

@@ -13,6 +13,7 @@ import { parse, stringify } from "flatted";
 import Home from "./Components/Home";
 import Users from "./Components/Users";
 import Drivers from "./Components/Drivers";
+import Requests from "./Components/Requests";
 
 export const transformCircular = createTransform(
   (inboundState, key) => stringify(inboundState),
@@ -38,6 +39,7 @@ function App() {
         <Route path="/" exact component={Home} />
         <Route path="/users" exact component={Users} />
         <Route path="/drivers" exact component={Drivers} />
+        <Route path="/requests" exact component={Requests} />
       </Switch>
     </Provider>
   );

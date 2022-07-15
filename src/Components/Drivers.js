@@ -198,6 +198,27 @@ class Drivers extends Component {
   renderCorrectDataTable() {
     switch (this.state.selectedDriversCategory) {
       case "ride":
+        if (
+          this.state.usersData.registered.filter(
+            (user) => user["operation_clearances"] === "RIDE"
+          ).length === 0
+        )
+          return (
+            <div className={classes.emptyDriversShower}>
+              {this.state.isLoading ? (
+                <Loader
+                  type="TailSpin"
+                  color="#000"
+                  height={50}
+                  width={50}
+                  timeout={300000000} //3 secs
+                />
+              ) : (
+                "No registered ride drivers yet."
+              )}
+            </div>
+          );
+
         return (
           <table className={classes.tableMain}>
             <tr className={classes.headerTable}>
@@ -209,12 +230,16 @@ class Drivers extends Component {
               <td>State</td>
               <td>Taxi number</td>
               <td>User type</td>
+              <td>Suspension</td>
             </tr>
 
             {/* Body */}
-            {this.state.usersData.registered.map((user, index) => {
-              if (user["operation_clearances"] === "RIDE") {
-                let state = user["operational_state"]["status"];
+            {this.state.usersData.registered
+              .filter((el) => el["operation_clearances"] === "RIDE")
+              .map((user, index) => {
+                let state = user["isDriverSuspended"]
+                  ? "offline"
+                  : user["operational_state"]["status"];
 
                 return (
                   <tr
@@ -259,14 +284,49 @@ class Drivers extends Component {
                     </td>
                     <td>{user["cars_data"][0]["taxi_number"]}</td>
                     <td>Taxi driver</td>
+                    <td
+                      style={
+                        user["isDriverSuspended"] === false
+                          ? {
+                              color: process.env.REACT_APP_PRIMARY_COLOR,
+                              fontFamily: "MoveTextBold",
+                            }
+                          : {
+                              color: process.env.REACT_APP_ERROR_COLOR,
+                              fontFamily: "MoveTextMedium",
+                            }
+                      }
+                    >
+                      {user["isDriverSuspended"] ? "Suspended" : "Active"}
+                    </td>
                   </tr>
                 );
-              } else return null;
-            })}
+              })}
           </table>
         );
 
       case "delivery":
+        if (
+          this.state.usersData.registered.filter(
+            (user) => user["operation_clearances"] === "DELIVERY"
+          ).length === 0
+        )
+          return (
+            <div className={classes.emptyDriversShower}>
+              {this.state.isLoading ? (
+                <Loader
+                  type="TailSpin"
+                  color="#000"
+                  height={50}
+                  width={50}
+                  timeout={300000000} //3 secs
+                />
+              ) : (
+                "No registered delivery drivers yet."
+              )}
+            </div>
+          );
+
         return (
           <table className={classes.tableMain}>
             <tr className={classes.headerTable}>
@@ -278,12 +338,16 @@ class Drivers extends Component {
               <td>State</td>
               <td>Plate number</td>
               <td>User type</td>
+              <td>Suspension</td>
             </tr>
 
             {/* Body */}
-            {this.state.usersData.registered.map((user, index) => {
-              if (user["operation_clearances"] === "DELIVERY") {
-                let state = user["operational_state"]["status"];
+            {this.state.usersData.registered
+              .filter((el) => el["operation_clearances"] === "DELIVERY")
+              .map((user, index) => {
+                let state = user["isDriverSuspended"]
+                  ? "offline"
+                  : user["operational_state"]["status"];
 
                 return (
                   <tr
@@ -328,14 +392,49 @@ class Drivers extends Component {
                     </td>
                     <td>{user["cars_data"][0]["plate_number"]}</td>
                     <td>Courier</td>
+                    <td
+                      style={
+                        user["isDriverSuspended"] === false
+                          ? {
+                              color: process.env.REACT_APP_PRIMARY_COLOR,
+                              fontFamily: "MoveTextBold",
+                            }
+                          : {
+                              color: process.env.REACT_APP_ERROR_COLOR,
+                              fontFamily: "MoveTextMedium",
+                            }
+                      }
+                    >
+                      {user["isDriverSuspended"] ? "Suspended" : "Active"}
+                    </td>
                   </tr>
                 );
-              } else return null;
-            })}
+              })}
           </table>
         );
 
       case "shopping":
+        if (
+          this.state.usersData.registered.filter(
+            (user) => user["operation_clearances"] === "SHOPPING"
+          ).length === 0
+        )
+          return (
+            <div className={classes.emptyDriversShower}>
+              {this.state.isLoading ? (
+                <Loader
+                  type="TailSpin"
+                  color="#000"
+                  height={50}
+                  width={50}
+                  timeout={300000000} //3 secs
+                />
+              ) : (
+                "No registered shoppers yet."
+              )}
+            </div>
+          );
+
         return (
           <table className={classes.tableMain}>
             <tr className={classes.headerTable}>
@@ -347,12 +446,16 @@ class Drivers extends Component {
               <td>State</td>
               <td>ID number</td>
               <td>User type</td>
+              <td>Suspension</td>
             </tr>
 
             {/* Body */}
-            {this.state.usersData.registered.map((user, index) => {
-              if (user["operation_clearances"] === "SHOPPING") {
-                let state = user["operational_state"]["status"];
+            {this.state.usersData.registered
+              .filter((el) => el["operation_clearances"] === "SHOPPING")
+              .map((user, index) => {
+                let state = user["isDriverSuspended"]
+                  ? "offline"
+                  : user["operational_state"]["status"];
 
                 return (
                   <tr
@@ -397,14 +500,35 @@ class Drivers extends Component {
                     </td>
                     <td>{user["_id"].toUpperCase().substring(0, 10)}</td>
                     <td>Shopper</td>
+                    <td
+                      style={
+                        user["isDriverSuspended"] === false
+                          ? {
+                              color: process.env.REACT_APP_PRIMARY_COLOR,
+                              fontFamily: "MoveTextBold",
+                            }
+                          : {
+                              color: process.env.REACT_APP_ERROR_COLOR,
+                              fontFamily: "MoveTextMedium",
+                            }
+                      }
+                    >
+                      {user["isDriverSuspended"] ? "Suspended" : "Active"}
+                    </td>
                   </tr>
                 );
-              } else return null;
-            })}
+              })}
           </table>
         );
 
       case "awaiting":
+        if (this.state.usersData.awaiting.length === 0)
+          return (
+            <div className={classes.emptyDriversShower}>
+              No drivers applications yet.
+            </div>
+          );
+
         return (
           <table className={classes.tableMain}>
             <tr className={classes.headerTable}>
@@ -533,6 +657,7 @@ class Drivers extends Component {
               {this.renderInformationWithLabel({
                 title: this.state.selectedDriverFocus["operation_clearances"],
                 label: "Operation clearance",
+                color: process.env.REACT_APP_SECONDARY_COLOR,
               })}
               {/* Surname */}
               {this.renderInformationWithLabel({
@@ -557,7 +682,7 @@ class Drivers extends Component {
                 title: this.state.selectedDriverFocus["phone_number"],
                 label: "Phone number",
               })}
-              {/* Surname */}
+              {/* Account state */}
               {this.renderInformationWithLabel({
                 title: this.state.selectedDriverFocus["identification_data"][
                   "isAccount_verified"
@@ -566,6 +691,20 @@ class Drivers extends Component {
                   : "Not verified",
                 label: "Account state",
               })}
+              {/* Status */}
+              {isShoppingDriver
+                ? this.renderInformationWithLabel({
+                    title: this.state.selectedDriverFocus["isDriverSuspended"]
+                      ? "Suspended"
+                      : this.state.selectedDriverFocus["operational_state"][
+                          "status"
+                        ],
+                    label: "Status",
+                    color: this.state.selectedDriverFocus["isDriverSuspended"]
+                      ? process.env.REACT_APP_ERROR_COLOR
+                      : process.env.REACT_APP_PRIMARY_COLOR,
+                  })
+                : null}
             </div>
           </div>
           {/* Car details */}
@@ -579,6 +718,7 @@ class Drivers extends Component {
                   alt="car"
                   src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["cars_data"][0]["taxi_picture"]}`}
                   className={classes.trueBriefImage}
+                  style={{ objectFit: "contain" }}
                 />
               </div>
               <div className={classes.textualInfosBrief}>
@@ -617,6 +757,23 @@ class Drivers extends Component {
                       label: "Taxi number",
                     })}
               </div>
+              {/* 1.5 */}
+              <div className={classes.textualInfosBrief}>
+                {/* Model name */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedDriverFocus["cars_data"][0][
+                      "model_name"
+                    ],
+                  label: "Model",
+                })}
+                {/* Color */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedDriverFocus["cars_data"][0]["color"],
+                  label: "Color",
+                })}
+              </div>
               {/* 2 */}
               <div className={classes.textualInfosBrief}>
                 {/* Vehicle type */}
@@ -638,6 +795,9 @@ class Drivers extends Component {
                         "status"
                       ],
                   label: "Status",
+                  color: this.state.selectedDriverFocus["isDriverSuspended"]
+                    ? process.env.REACT_APP_ERROR_COLOR
+                    : process.env.REACT_APP_PRIMARY_COLOR,
                 })}
               </div>
               {/* 3 */}
@@ -676,44 +836,62 @@ class Drivers extends Component {
               }
               onClick={() => {
                 toast.dismiss();
-                toast.loading("Suspending the driver.");
 
-                let that = this;
-                console.log({
-                  admin_fp: "abc",
-                  operation:
+                if (
+                  window.confirm(
                     this.state.selectedDriverFocus["isDriverSuspended"] ===
-                    false
-                      ? "suspended"
-                      : "unsuspend",
-                  driver_id: this.state.selectedDriverFocus["_id"],
-                });
-                axios
-                  .post(
-                    `${process.env.REACT_APP_BRIDGE}/suspendUnsuspendDriver`,
-                    {
-                      admin_fp: "abc",
-                      operation:
-                        this.state.selectedDriverFocus["isDriverSuspended"] ===
-                        false
-                          ? "suspend"
-                          : "unsuspend",
-                      driver_id: this.state.selectedDriverFocus["_id"],
-                    }
+                      false
+                      ? "Are you sure you want to suspend this driver?"
+                      : "Are you sure you want to unsuspend this driver?"
                   )
-                  .then(function (response) {
-                    console.log(response.data);
-                    toast.dismiss();
+                ) {
+                  toast.loading("Suspending the driver.");
 
-                    if (response.data.response === "error")
-                      toast.error("Unable to perform the operation.");
-                    else toast.success("Successfully updated");
-                  })
-                  .catch(function (error) {
-                    console.log(error);
-                    toast.dismiss();
-                    toast.error("Unable to perform the operation.");
+                  let that = this;
+                  console.log({
+                    admin_fp: "abc",
+                    operation:
+                      this.state.selectedDriverFocus["isDriverSuspended"] ===
+                      false
+                        ? "suspended"
+                        : "unsuspend",
+                    driver_id: this.state.selectedDriverFocus["_id"],
                   });
+                  axios
+                    .post(
+                      `${process.env.REACT_APP_BRIDGE}/suspendUnsuspendDriver`,
+                      {
+                        admin_fp: "abc",
+                        operation:
+                          this.state.selectedDriverFocus[
+                            "isDriverSuspended"
+                          ] === false
+                            ? "suspend"
+                            : "unsuspend",
+                        driver_id: this.state.selectedDriverFocus["_id"],
+                      }
+                    )
+                    .then(function (response) {
+                      console.log(response.data);
+                      toast.dismiss();
+
+                      if (response.data.response === "error")
+                        toast.error("Unable to perform the operation.");
+                      else
+                        toast.success(
+                          that.state.selectedDriverFocus[
+                            "isDriverSuspended"
+                          ] === false
+                            ? "Successfully suspended."
+                            : "Successfully unsuspended."
+                        );
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                      toast.dismiss();
+                      toast.error("Unable to perform the operation.");
+                    });
+                }
               }}
             >
               {this.state.selectedDriverFocus["isDriverSuspended"]
@@ -903,39 +1081,54 @@ class Drivers extends Component {
               }}
               onClick={() => {
                 toast.dismiss();
-                toast.loading("Approving the driver.");
 
-                let that = this;
-                console.log({
-                  admin_fp: "abc",
-                  operation:
-                    this.state.selectedDriverFocus["isDriverSuspended"] ===
-                    false
-                      ? "suspended"
-                      : "unsuspend",
-                  driver_id: this.state.selectedDriverFocus["_id"],
-                });
-                axios
-                  .post(
-                    `${process.env.REACT_APP_BRIDGE}/approveDriverAccount`,
-                    {
-                      admin_fp: "abc",
-                      driverData: this.state.selectedDriverFocus,
-                    }
+                if (
+                  window.confirm(
+                    "You are about to approve this driver, would you like to proceed?"
                   )
-                  .then(function (response) {
-                    console.log(response.data);
-                    toast.dismiss();
+                ) {
+                  toast.loading("Approving the driver.");
 
-                    if (response.data.response === "error")
-                      toast.error("Unable to approve this this.");
-                    else toast.success("Successfully approved!");
-                  })
-                  .catch(function (error) {
-                    console.log(error);
-                    toast.dismiss();
-                    toast.error("Unable to approve this this.");
+                  let that = this;
+                  console.log({
+                    admin_fp: "abc",
+                    operation:
+                      this.state.selectedDriverFocus["isDriverSuspended"] ===
+                      false
+                        ? "suspended"
+                        : "unsuspend",
+                    driver_id: this.state.selectedDriverFocus["_id"],
                   });
+                  axios
+                    .post(
+                      `${process.env.REACT_APP_BRIDGE}/approveDriverAccount`,
+                      {
+                        admin_fp: "abc",
+                        driverData: this.state.selectedDriverFocus,
+                      }
+                    )
+                    .then(function (response) {
+                      console.log(response.data);
+                      toast.dismiss();
+
+                      if (response.data.response === "error")
+                        toast.error("Unable to approve this this.");
+                      else {
+                        toast.success("Successfully approved!");
+                        setTimeout(() => {
+                          //Go back
+                          that.setState({
+                            selectedDriverFocus: false,
+                          });
+                        }, 4000);
+                      }
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                      toast.dismiss();
+                      toast.error("Unable to approve this this.");
+                    });
+                }
               }}
             >
               Approve account
@@ -1047,11 +1240,17 @@ class Drivers extends Component {
   }
 
   //Render information with label
-  renderInformationWithLabel({ title = "Title", label = "Label" }) {
+  renderInformationWithLabel({
+    title = "Title",
+    label = "Label",
+    color = "#000",
+  }) {
     return (
       <div className={classes.infoPlusLabelContainer}>
         <div className={classes.labelInfoPlusL}>{label}</div>
-        <div className={classes.titleInfoPlusL}>{title}</div>
+        <div className={classes.titleInfoPlusL} style={{ color: color }}>
+          {title}
+        </div>
       </div>
     );
   }
@@ -1072,7 +1271,7 @@ class Drivers extends Component {
             currentIndex={0}
             disableScroll={false}
             closeOnClickOutside={true}
-            backgroundStyle={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+            backgroundStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
             onClose={() => this.setState({ shouldShowFilePreview: false })}
           />
         )}
