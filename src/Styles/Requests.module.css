@@ -222,3 +222,161 @@
 }
 
 /* Tables requests */
+
+
+/* Modal request */
+.modalContainer {
+  overflow-y: auto;
+  padding: 20px;
+  /* background-color: red; */
+  padding-bottom: 50px;
+}
+
+
+.headerModalRequest {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.titleRequestModal {
+  font-family: 'MoveBold', sans-serif;
+  font-size: 22px;
+}
+
+.clientNameModal {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 18px;
+  color: #096ed4
+}
+
+.basicTitle {
+  font-family: 'MoveTextBold', sans-serif;
+  color: #545b64a8;
+  font-size: 16px;
+  margin-top: 40px;
+  /* border: 1px solid red; */
+  padding: 0;
+}
+
+.itiContainer {
+  border-bottom: 1px solid #d0d0d0;
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 20px;
+  margin-top: 10px;
+}
+
+.itiContainer>div {
+  /* border: 1px solid red; */
+  /* width: 35%; */
+  flex: 1
+}
+
+
+/* LOCATION */
+.infoPlusLabelContainerLocation {
+  /* border: 1px solid black; */
+  margin-top: 15px;
+}
+
+.labelInfoPlusLocation {
+  font-family: 'MoveTextLight', sans-serif;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.titleInfoPlusLocation {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 16px;
+  padding-top: 3px;
+  margin-bottom: 5px;
+}
+
+.suburbInfoPlusLocation {
+  font-family: 'MoveTextRegular', sans-serif;
+  font-size: 15px;
+}
+
+.locationCoreContainer {
+  /* border: 1px solid blue; */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+
+.numberLocationIndex {
+  position: relative;
+  top: 2px;
+  padding-right: 10px;
+  color: #096ed4;
+}
+
+.lookingForDriverContainer {
+  border: 1px solid #f0f0f0;
+  margin-top: 20px;
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  color: #096ed4;
+}
+
+/* Actions */
+.actionNode {
+  border: 1px solid #000;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 250px;
+  justify-content: space-between;
+  height: 45px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 3px;
+  font-size: 15px;
+  color: #11A05A;
+  font-family: 'MoveTextMedium', sans-serif;
+  cursor: pointer;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.actionNode:hover {
+  background-color: #f0f0f0;
+  color: #fff;
+}
+
+
+/* Driver profile */
+.profileBrief {
+  display: flex;
+  flex-direction: row;
+  /* padding: 25px; */
+  padding-bottom: 45px;
+}
+
+.profilePicBrief {
+  border: 1px solid #d0d0d0;
+  width: 100px;
+  height: 100px;
+}
+
+.textualInfosBrief {
+  margin-right: 50px;
+}
+
+.trueBriefImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Modal request */

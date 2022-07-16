@@ -7,8 +7,36 @@ import {
   ArrowBack,
   ArrowForwardIosSharp,
   ArrowForward,
+  CheckCircle,
 } from "@material-ui/icons";
 import ucFirst from "../Helpers/Helpers";
+import Modal from "react-modal";
+import { getRealisticPlacesNames } from "../Helpers/DataParser";
+import toast, { Toaster } from "react-hot-toast";
+import ImageViewer from "react-simple-image-viewer";
+
+const customStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
+  },
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    width: "90%",
+    height: "80%",
+    transform: "translate(-50%, -50%)",
+    padding: 0,
+  },
+};
+
 const axios = require("axios").default;
 
 class Requests extends Component {
@@ -18,6 +46,235 @@ class Requests extends Component {
     this.state = {
       selectedRequestCategory: "ride", //ride, delivery or shopping
       selectedRequestStatus: "inprogress", //inprogress, completed, cancelled
+      selectedRequestForFocus: {
+        ride_mode: "RIDE",
+        date_requested: "2022-07-14T22:59:10.000Z",
+        request_type: "immediate",
+        date_clientRatedRide: null,
+        request_state_vars: {
+          inRouteToDropoff: false,
+          completedDropoff: false,
+          inRouteToPickup: false,
+          completedRatingClient: false,
+          isAccepted: false,
+          rating_data: {
+            rating: false,
+            compliments: [],
+            comments: false,
+          },
+        },
+        request_fp:
+          "3869456341d1a12d74c847470fa62d7efe9ea01ca3796aa9da2f67660649899c",
+        client_id:
+          "9246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e",
+        date_routeToDropoff: null,
+        totals_request: { fare: 76 },
+        request_documentation: { note: "" },
+        ride_selected: {
+          country: "Namibia",
+          app_label: "Normal Taxi",
+          city: ["Windhoek", "Swakopmund", "Walvis Bay"],
+          base_fare: 76,
+          description: "Affordable rides",
+          id: 1,
+          media: { car_app_icon: "normalTaxiEconomy.jpeg" },
+          availability: "available",
+          category: "Economy",
+          ride_type: "RIDE",
+          car_type: "normalTaxiEconomy",
+        },
+        ride_style: "shared",
+        security: { pin: "959858" },
+        date_completedDropoff: null,
+        areGoingTheSameWay: true,
+        shopper_id:
+          "aaaaa265bca710a49756d90e382f9591dceba4b26cc03c01aaca3828145376321f9b8b401ae7e1efa41c99e7f210ecc191c62b2dc7bcda566e312378e1a1fdf1b",
+        passengers_number: 2,
+        locations: {
+          dropoff: [
+            {
+              country: "Namibia",
+              indexSearch: 4,
+              city: "Windhoek",
+              query: "w",
+              coordinates: [-22.5537286, 17.0711856],
+              averageGeo: 0,
+              location_id: "ChIJf4iRcmQbCxwRJlzYl-vAkEg",
+              street_name: false,
+              location_name: "Windhoek Central Hospital",
+              street: false,
+              suburb: false,
+              state: "Khomas",
+              _id: "b3a9202c-fd92-443f-9c0e-5b347ef4eb57",
+            },
+            {
+              country: "Namibia",
+              indexSearch: 4,
+              city: "Windhoek",
+              query: "w",
+              coordinates: [-22.5537286, 17.0711856],
+              averageGeo: 0,
+              location_id: "ChIJf4iRcmQbCxwRJlzYl-vAkEg",
+              street_name: false,
+              location_name: "Windhoek Central Hospital",
+              street: false,
+              suburb: false,
+              state: "Khomas",
+              _id: "b3a9202c-fd92-443f-9c0e-5b347ef4eb57",
+            },
+          ],
+          pickup: {
+            osm_id: 8401632320,
+            country: "Namibia",
+            city: "Windhoek",
+            countrycode: "NA",
+            postcode: "10007",
+            locality: "Windhoek North",
+            coordinates: { latitude: -22.55928, longitude: 17.07581 },
+            type: "house",
+            street_name: "Johann Albrecht Street",
+            osm_type: "N",
+            location_name: "Johann Albrecht Street",
+            osm_key: "highway",
+            street: "Johann Albrecht Street",
+            district: "Windhoek North",
+            osm_value: "bus_stop",
+            name: "Inner City Church",
+            suburb: "Windhoek North",
+            state: "Khomas Region",
+            isCity_supported: true,
+          },
+        },
+        _id: "4f6ae1e5-d56b-47bd-92c7-7e0b2ab793e6",
+        payment_method: "mobile_money",
+        date_pickedup: null,
+        clientData: {
+          user_identifier:
+            "9246a726f668f5471a797175116f04e38b33f2fd1ec2f74ebd3936c3938a3778daa71b0b71c43880e6d02df7aec129cb3576d07ebe46d93788b9c8ea6ec4555e",
+          last_updated: "2022-07-13T21:10:54.000Z",
+          gender: "male",
+          account_verifications: {
+            is_accountVerified: true,
+            is_policies_accepted: true,
+            phone_verification_secrets: {
+              otp: 55576,
+              date_sent: "2022-07-14T21:29:19.000Z",
+            },
+          },
+          media: { profile_picture: "male.png" },
+          date_registered: "2021-04-14T22:07:55.000Z",
+          password: false,
+          surname: "Tesh",
+          name: "Jeff",
+          phone_number: "+264856997867",
+          _id: "900074b9bc7a4e14ea3ae3cac",
+          account_state: "full",
+          pushnotif_token: {
+            isSubscribed: false,
+            emailAddress: null,
+            isSMSSubscribed: false,
+            notificationPermissionStatus: null,
+            smsUserId: null,
+            isPushDisabled: false,
+            emailUserId: null,
+            smsNumber: null,
+            hasNotificationPermission: true,
+            isEmailSubscribed: false,
+            userId: null,
+            pushToken: null,
+          },
+          email: "jeff@gmail.com",
+        },
+        driverData: {
+          identification_data: {
+            date_updated: "2022-07-15T14:28:09.000Z",
+            rating: 5,
+            copy_id_paper: "id_paper.png",
+            profile_picture: "user.png",
+            banking_details: {
+              bank_name: "FNB",
+              account_number: "237823473843",
+            },
+            driver_licence_doc: "licence.png",
+            title: "Mr",
+            copy_blue_paper: "blue_paper.png",
+            copy_public_permit: "public_permit.pdf",
+            isAccount_verified: true,
+            copy_white_paper: "white_paper.png",
+            paymentNumber: 678998,
+            personal_id_number: "N778821212IK",
+          },
+          date_updated: "2022-04-11T13:00:38.000Z",
+          gender: "M",
+          account_verifications: {
+            phone_verification_secrets: {
+              otp: 92123,
+              date_sent: "2022-06-30T15:25:11.000Z",
+            },
+          },
+          payments_information: {},
+          date_registered: "2020-05-11T09:45:00.000Z",
+          operation_clearances: "RIDE",
+          passwod: "1234567",
+          owners_information: false,
+          surname: "Julius",
+          driver_fingerprint:
+            "aaaaa265bca710a49756d90e382f9591dceba4b26cc03c01aaca3828145376321f9b8b401ae7e1efa41c99e7f210ecc191c62b2dc7bcda566e312378e1a1fdf1b",
+          suspension_infos: [
+            {
+              date: {},
+              reason: "PAID_COMISSION",
+              state: false,
+              bot_locker: "Junkstem",
+            },
+          ],
+          suspension_message: "false",
+          name: "Jeremia",
+          phone_number: "+264856997167",
+          _id: "19996efe962c92a002ef1e79",
+          cars_data: [
+            {
+              date_updated: {},
+              permit_number: "23543-7748-993N",
+              taxi_number: "H265",
+              max_passengers: 4,
+              taxi_picture: "default.png",
+              car_brand: "Toyota Corolla",
+              vehicle_type: "normalTaxiEconomy",
+              plate_number: "N25578W",
+              car_fingerprint: "dkjsdksjd2930293dskdjksdj20",
+              date_registered: {},
+            },
+          ],
+          isDriverSuspended: false,
+          operational_state: {
+            last_location: {
+              country: "Namibia",
+              location_name: "Inner City Church",
+              date_updated: {},
+              geographic_extent: false,
+              prev_coordinates: {
+                latitude: "-22.55928",
+                longitude: "17.07581",
+              },
+              city: "Windhoek",
+              street: "Johann Albrecht Street",
+              coordinates: { latitude: "-22.40928", longitude: "17.08881" },
+              suburb: "Windhoek West",
+            },
+            push_notification_token: "abc",
+            default_selected_car: {
+              vehicle_type: "normalTaxiEconomy",
+              date_Selected: {},
+              car_fingerprint: "dkjsdksjd2930293dskdjksdj20",
+              max_passengers: 4,
+            },
+            status: "online",
+          },
+          regional_clearances: ["Windhoek"],
+          email: "jeremiajulius@gmail.com",
+        },
+      }, //The selected request for focus, in the modal
       requestsMetaData: {
         ride: {
           inprogress: [
@@ -5996,7 +6253,7 @@ class Requests extends Component {
           admin_fp: "abc",
         })
         .then(function (response) {
-          console.log(response.data.response);
+          //   console.log(response.data.response);
           if (
             response.data.response === "error" ||
             Object.keys(response.data.response).length === 0
@@ -6210,11 +6467,19 @@ class Requests extends Component {
     title = "Title",
     label = "Label",
     color = "#000",
+    marginLeft = "25px",
+    fontSize = "18px",
   }) {
     return (
-      <div className={classes.infoPlusLabelContainer}>
+      <div
+        className={classes.infoPlusLabelContainer}
+        style={{ marginLeft: marginLeft }}
+      >
         <div className={classes.labelInfoPlusL}>{label}</div>
-        <div className={classes.titleInfoPlusL} style={{ color: color }}>
+        <div
+          className={classes.titleInfoPlusL}
+          style={{ color: color, fontSize: fontSize }}
+        >
           {title}
         </div>
       </div>
@@ -6374,9 +6639,478 @@ class Requests extends Component {
     return paymentCodeName === "mobile_money" ? "Ewallet" : "Cash";
   }
 
+  //Render basic title
+  renderBasicTitle({ title = "My title" }) {
+    return <div className={classes.basicTitle}>{title}</div>;
+  }
+
+  //Render appropriate modal content
+  renderAppropriateModalContent() {
+    let request = this.state.selectedRequestForFocus;
+
+    switch (this.state.selectedRequestCategory) {
+      case "ride":
+        return (
+          <div className={classes.modalContainer}>
+            <div className={classes.headerPortionModal}>
+              <div className={classes.headerModalRequest}>
+                <div className={classes.titleRequestModal}>Request #1</div>
+                <div className={classes.clientNameModal}>other</div>
+              </div>
+              <table className={classes.tableMain}>
+                <tr className={classes.headerTable}>
+                  <td>Driver</td>
+                  <td>Client name</td>
+                  <td>Date requested</td>
+                  <td>Request type</td>
+                  <td>Amount</td>
+                  <td>Payment method</td>
+                  <td>Progress step</td>
+                </tr>
+                {/* ... */}
+                <tr className={classes.rowElementTable}>
+                  <td
+                    style={{
+                      backgroundColor:
+                        this.state.selectedRequestStatus === "cancelled"
+                          ? "#fff"
+                          : request.shopper_id === "false"
+                          ? process.env.REACT_APP_ERROR_COLOR
+                          : process.env.REACT_APP_PRIMARY_COLOR,
+                      color:
+                        this.state.selectedRequestStatus === "cancelled"
+                          ? request.shopper_id === "false"
+                            ? process.env.REACT_APP_ERROR_COLOR
+                            : process.env.REACT_APP_PRIMARY_COLOR
+                          : "#fff",
+                      fontFamily: "MoveTextMedium",
+                    }}
+                  >
+                    {request.shopper_id === "false"
+                      ? this.state.selectedRequestStatus === "cancelled"
+                        ? "No driver"
+                        : "Pending..."
+                      : request.driverData.cars_data[0].taxi_number}
+                  </td>
+                  <td>{request.clientData.name}</td>
+                  <td>{this.getReadableDate(request.date_requested)}</td>
+                  <td
+                    style={{
+                      fontFamily: "MoveTextBold",
+                      color: process.env.REACT_APP_SECONDARY_COLOR,
+                    }}
+                  >
+                    {ucFirst({ stringData: request.ride_mode })}
+                  </td>
+                  <td
+                    style={{
+                      fontFamily: "MoveTextBold",
+                      color: process.env.REACT_APP_PRIMARY_COLOR,
+                      fontSize: "18px",
+                    }}
+                  >{`N$${request.totals_request.fare}`}</td>
+                  <td>
+                    {this.getReadablePaymentMethod(request.payment_method)}
+                  </td>
+                  <td>1</td>
+                </tr>
+              </table>
+            </div>
+
+            {this.renderBasicTitle({ title: "Itinary" })}
+            {this.renderItinary()}
+
+            {/* {this.renderBasicTitle({ title: "Fare details" })}
+            {this.renderFareDetails({
+              requestData: this.state.selectedRequestForFocus,
+            })} */}
+
+            {this.renderBasicTitle({ title: "Driver details" })}
+            {this.renderDriverDetails({
+              requestData: this.state.selectedRequestForFocus,
+            })}
+
+            {this.renderBasicTitle({ title: "Actions" })}
+            {this.renderGlobalActionNodes({
+              requestData: this.state.selectedRequestForFocus,
+            })}
+          </div>
+        );
+
+      default:
+        return <></>;
+    }
+  }
+
+  //Render global action nodes
+  renderGlobalActionNodes({ requestData }) {
+    let requestState = requestData.request_state_vars;
+
+    switch (requestData.ride_mode) {
+      case "RIDE":
+        return (
+          <div
+            className={classes.itiContainer}
+            style={{
+              marginTop: "20px",
+              flexWrap: "wrap",
+              borderBottomColor: "#fff",
+            }}
+          >
+            {requestData.shopper_id === "false"
+              ? null
+              : this.renderActionNode({
+                  title: "Confirm pickup",
+                  isValidated: requestState.inRouteToDropoff,
+                  actuator: requestState.inRouteToDropoff
+                    ? () => {}
+                    : () => {
+                        toast.dismiss();
+
+                        if (
+                          window.confirm(
+                            "Do you really want to confirm the pickup?"
+                          )
+                        ) {
+                          toast.loading("Confirming the pickup");
+
+                          let that = this;
+                          axios
+                            .post(
+                              `${process.env.REACT_APP_BRIDGE}/confirm_pickup_request_driver_io`,
+                              {
+                                request_fp: requestData.request_fp,
+                                driver_fingerprint: requestData.shopper_id,
+                                requestType: requestData.ride_mode,
+                              }
+                            )
+                            .then(function (response) {
+                              console.log(response.data);
+                              toast.dismiss();
+
+                              if (
+                                /Successfully/i.test(response.data.response)
+                              ) {
+                                toast.success("Successfully confirmed pickup!");
+                                setTimeout(() => {
+                                  //Go back
+                                  that.setState({
+                                    selectedDriverFocus: false,
+                                  });
+                                }, 4000);
+                              } else toast.error("Unable to confirm the pickup.");
+                            })
+                            .catch(function (error) {
+                              console.log(error);
+                              toast.dismiss();
+                              toast.error("Unable to confirm the pickup.");
+                            });
+                        }
+                      },
+                })}
+            {requestData.shopper_id === "false"
+              ? null
+              : this.renderActionNode({
+                  title: "Confirm drop off",
+                  isValidated: requestState.completedDropoff,
+                  actuator: requestState.completedDropoff
+                    ? () => {}
+                    : () => {
+                        toast.dismiss();
+
+                        if (
+                          window.confirm(
+                            "Do you really want to confirm the drop off?"
+                          )
+                        ) {
+                          toast.loading("Confirming the drop off");
+
+                          let that = this;
+                          axios
+                            .post(
+                              `${process.env.REACT_APP_BRIDGE}/confirm_dropoff_request_driver_io`,
+                              {
+                                request_fp: requestData.request_fp,
+                                driver_fingerprint: requestData.shopper_id,
+                                requestType: requestData.ride_mode,
+                                selectedPackageIndex: 0,
+                              }
+                            )
+                            .then(function (response) {
+                              console.log(response.data);
+                              toast.dismiss();
+
+                              if (
+                                /Successfully/i.test(response.data.response)
+                              ) {
+                                toast.success(
+                                  "Successfully confirmed drop off!"
+                                );
+                                setTimeout(() => {
+                                  //Go back
+                                  that.setState({
+                                    selectedDriverFocus: false,
+                                  });
+                                }, 4000);
+                              } else toast.error("Unable to confirm the drop off.");
+                            })
+                            .catch(function (error) {
+                              console.log(error);
+                              toast.dismiss();
+                              toast.error("Unable to confirm the drop off.");
+                            });
+                        }
+                      },
+                })}
+            {requestData.shopper_id === "false"
+              ? null
+              : requestState.inRouteToDropoff
+              ? null
+              : this.renderActionNode({
+                  title: "Cancel for driver",
+                  isValidated: false,
+                  color: process.env.REACT_APP_ERROR_COLOR,
+                })}
+            {this.renderActionNode({
+              title: "Delete request",
+              isValidated: false,
+              color: process.env.REACT_APP_ERROR_COLOR,
+            })}
+          </div>
+        );
+
+      default:
+        return <></>;
+    }
+  }
+
+  //Render action node
+  renderActionNode({
+    title = "Document name",
+    isValidated = false,
+    color = process.env.REACT_APP_PRIMARY_COLOR,
+    actuator = () => {
+      console.log("No actions specified");
+    },
+  }) {
+    return (
+      <div
+        className={classes.actionNode}
+        style={{ color: color }}
+        onClick={actuator}
+      >
+        <div>{title}</div>
+        {isValidated ? (
+          <CheckCircle style={{ fontSize: "15px" }} />
+        ) : (
+          <ArrowForwardIosSharp style={{ fontSize: "15px" }} />
+        )}
+      </div>
+    );
+  }
+
+  //Render the driver details for each category
+  renderDriverDetails({ requestData }) {
+    if (requestData.shopper_id === "false")
+      return (
+        <div className={classes.lookingForDriverContainer}>
+          <Loader
+            type="TailSpin"
+            color="#096ed4"
+            height={20}
+            width={20}
+            timeout={300000000} //3 secs
+          />{" "}
+          <span style={{ marginLeft: "15px" }}>
+            Still looking for a driver...
+          </span>
+        </div>
+      );
+
+    switch (requestData.ride_mode) {
+      case "RIDE":
+        return (
+          <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
+            <div className={classes.profileBrief}>
+              <div className={classes.profilePicBrief}>
+                <img
+                  alt="profile"
+                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${requestData.driverData["identification_data"]["profile_picture"]}`}
+                  className={classes.trueBriefImage}
+                />
+              </div>
+              <div className={classes.textualInfosBrief}>
+                {/* Name */}
+                {this.renderInformationWithLabel({
+                  title: this.state.selectedRequestForFocus.driverData["name"],
+                  label: "Name",
+                  fontSize: "16px",
+                })}
+                {/* Surname */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedRequestForFocus.driverData["surname"],
+                  label: "Surname",
+                  fontSize: "16px",
+                })}
+              </div>
+              {/* ... */}
+              <div className={classes.textualInfosBrief}>
+                {/* Gender */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedRequestForFocus.driverData["gender"],
+                  label: "Gender",
+                  fontSize: "16px",
+                })}
+                {/* Phone number */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedRequestForFocus.driverData.cars_data[0]
+                      .taxi_number,
+                  label: "Taxi number",
+                  fontSize: "16px",
+                })}
+              </div>
+              {/* ... */}
+              <div className={classes.textualInfosBrief}>
+                {/* Surname */}
+                {this.renderInformationWithLabel({
+                  title:
+                    this.state.selectedRequestForFocus.driverData.phone_number,
+                  label: "Phone number",
+                  fontSize: "16px",
+                })}
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return <></>;
+    }
+  }
+
+  //Render the fare details for each category
+  renderFareDetails({ requestData }) {
+    let fareData = requestData.totals_request;
+
+    switch (requestData.ride_mode) {
+      case "RIDE":
+        return (
+          <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
+            {this.renderInformationWithLabel({
+              title: `N$${fareData.fare}`,
+              label: "Amount",
+              marginLeft: "0px",
+              color: process.env.REACT_APP_PRIMARY_COLOR,
+            })}
+
+            {/* Payment method */}
+            {this.renderInformationWithLabel({
+              title: this.getReadablePaymentMethod(requestData.payment_method),
+              label: "Payment method",
+              marginLeft: "0px",
+            })}
+          </div>
+        );
+
+      default:
+        return <></>;
+    }
+  }
+
+  //Itenary: pickup destination
+  renderItinary() {
+    switch (this.state.selectedRequestForFocus.ride_mode) {
+      case "RIDE":
+        return (
+          <div className={classes.itiContainer}>
+            <div>
+              {this.renderLocationWithLabel({
+                locationData: [
+                  this.state.selectedRequestForFocus.locations.pickup,
+                ],
+                label: "Pickup location",
+              })}
+            </div>
+            <div>
+              {this.renderLocationWithLabel({
+                locationData:
+                  this.state.selectedRequestForFocus.locations.dropoff,
+                label: "Drop off location",
+              })}
+            </div>
+          </div>
+        );
+
+      default:
+        return <></>;
+    }
+  }
+
+  //Render location title and label
+  renderLocationWithLabel({
+    locationData = [{ suburb: "Suburb name", street_name: "Street name" }],
+    label = "Label",
+    color = "#000",
+  }) {
+    return (
+      <div className={classes.infoPlusLabelContainerLocation}>
+        <div className={classes.labelInfoPlusLocation}>{label}</div>
+        {locationData.map((location, index) => {
+          let locationReformattedData = getRealisticPlacesNames({
+            locationData: location,
+          });
+          return (
+            <div key={index} className={classes.locationCoreContainer}>
+              <span className={classes.numberLocationIndex}>{index + 1}.</span>
+              <div>
+                <div
+                  className={classes.titleInfoPlusLocation}
+                  style={{ color: color }}
+                >
+                  {locationReformattedData.suburb}
+                </div>
+                <div
+                  className={classes.suburbInfoPlusLocation}
+                  style={{ color: color }}
+                >
+                  {locationReformattedData.street_name}
+                  {locationReformattedData.street_name !== false &&
+                  locationReformattedData.street_name.length > 0
+                    ? ", "
+                    : ""}
+                  {locationReformattedData.location_name}
+                  {locationReformattedData.location_name !== false &&
+                  locationReformattedData.location_name.length > 0
+                    ? ", "
+                    : ""}
+                  {locationReformattedData.city}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className={classes.container}>
+        <Toaster />
+
+        <Modal
+          isOpen={true}
+          onAfterOpen={() => {}}
+          onRequestClose={() => {}}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          {this.renderAppropriateModalContent()}
+        </Modal>
+
         {/* Menu */}
         <DrawerMenu />
 
