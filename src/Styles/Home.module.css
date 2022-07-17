@@ -47,7 +47,128 @@
 }
 
 .contentContainer {
-  background-color: red;
+  background-color: #f0f0f0;
   margin-left: 250px;
   width: 100%;
+  overflow-y: auto;
+  padding-bottom: 100px;
+}
+
+/* Header */
+.headerContainer {
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+  height: 50px;
+}
+
+.headerTitle {
+  font-family: 'MoveTextBold', sans-serif;
+  font-size: 22px;
+}
+
+.otherSideHeader {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 18px;
+  padding-left: 10px;
+  padding-top: 4px;
+  color: #096ed4;
+}
+
+.rightCategoriesDrivers {
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+  width: 530px;
+  justify-content: space-between;
+}
+
+/* Header */
+
+/* Graph */
+
+.graphContainer {
+  /* border: 1px solid red; */
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.graphTrueContainer {
+  border: 1px solid #d0d0d0;
+  background-color: #fff;
+  height: 500px;
+  padding-top: 50px;
+  color: #fff;
+}
+
+/* Graph */
+
+.infoPlusLabelContainer {
+  /* border: 1px solid black; */
+  margin-bottom: 25px;
+}
+
+.labelInfoPlusL {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 14px;
+  color: #545b64a8;
+}
+
+.titleInfoPlusL {
+  font-family: 'MoveTextBold', sans-serif;
+  font-size: 17px;
+  padding-top: 3px;
+}
+
+.basicTitle {
+  font-family: 'MoveTextBold', sans-serif;
+  color: #545b64a8;
+  font-size: 17px;
+  margin-bottom: 35px;
+}
+
+/* Data split */
+.dataSplitContainer {
+  /* border: 1px solid red; */
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 120px;
+}
+
+.dataSplitNode {
+  border: 1px solid #d0d0d0;
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 35px;
+}
+
+.dsplitInsiderContainer {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dsplitInsiderContainer>div {
+  /* border: 1px solid black; */
+  flex: 1
+}
+
+.emptyDriversShower {
+  border: 1px solid #d0d0d0;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 120px;
 }
