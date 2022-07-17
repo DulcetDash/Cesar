@@ -373,7 +373,7 @@ class Requests extends Component {
     }
   }
 
-  //Get the number of requests for different requests status : inporgress, completed or cancelled
+  //Get the number of requests for different requests status : inprogress, completed or cancelled
   getNumberOfRequestsPerStyle(
     style,
     category = this.state.selectedRequestCategory
@@ -1256,7 +1256,7 @@ class Requests extends Component {
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
                 })}
-            {this.state.selectedRequestStatus !== "inporgress"
+            {this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
                   title: "Delete request",
@@ -1390,7 +1390,7 @@ class Requests extends Component {
                 })}
             {requestData.shopper_id === "false"
               ? null
-              : this.state.selectedRequestStatus !== "inporgress"
+              : this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
                   title: "Cancel for driver",
@@ -1399,7 +1399,7 @@ class Requests extends Component {
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
                 })}
-            {this.state.selectedRequestStatus !== "inporgress"
+            {this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
                   title: "Delete request",
@@ -1533,7 +1533,7 @@ class Requests extends Component {
                 })}
             {requestData.shopper_id === "false"
               ? null
-              : this.state.selectedRequestStatus !== "inporgress"
+              : this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
                   title: "Cancel for driver",
@@ -1542,7 +1542,7 @@ class Requests extends Component {
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
                 })}
-            {this.state.selectedRequestStatus !== "inporgress"
+            {this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
                   title: "Delete request",
