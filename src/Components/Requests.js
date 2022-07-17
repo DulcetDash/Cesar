@@ -1256,12 +1256,15 @@ class Requests extends Component {
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
                 })}
-            {this.renderActionNode({
-              title: "Delete request",
-              isValidated: false,
-              color: process.env.REACT_APP_ERROR_COLOR,
-              actuator: () => this.deleteRequest({ requestData: requestData }),
-            })}
+            {this.state.selectedRequestStatus !== "inporgress"
+              ? null
+              : this.renderActionNode({
+                  title: "Delete request",
+                  isValidated: false,
+                  color: process.env.REACT_APP_ERROR_COLOR,
+                  actuator: () =>
+                    this.deleteRequest({ requestData: requestData }),
+                })}
           </div>
         );
 
@@ -1387,7 +1390,7 @@ class Requests extends Component {
                 })}
             {requestData.shopper_id === "false"
               ? null
-              : requestState.inRouteToDropoff
+              : this.state.selectedRequestStatus !== "inporgress"
               ? null
               : this.renderActionNode({
                   title: "Cancel for driver",
@@ -1396,12 +1399,15 @@ class Requests extends Component {
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
                 })}
-            {this.renderActionNode({
-              title: "Delete request",
-              isValidated: false,
-              color: process.env.REACT_APP_ERROR_COLOR,
-              actuator: () => this.deleteRequest({ requestData: requestData }),
-            })}
+            {this.state.selectedRequestStatus !== "inporgress"
+              ? null
+              : this.renderActionNode({
+                  title: "Delete request",
+                  isValidated: false,
+                  color: process.env.REACT_APP_ERROR_COLOR,
+                  actuator: () =>
+                    this.deleteRequest({ requestData: requestData }),
+                })}
           </div>
         );
 
@@ -1527,7 +1533,7 @@ class Requests extends Component {
                 })}
             {requestData.shopper_id === "false"
               ? null
-              : requestState.inRouteToShop
+              : this.state.selectedRequestStatus !== "inporgress"
               ? null
               : this.renderActionNode({
                   title: "Cancel for driver",
@@ -1536,12 +1542,15 @@ class Requests extends Component {
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
                 })}
-            {this.renderActionNode({
-              title: "Delete request",
-              isValidated: false,
-              color: process.env.REACT_APP_ERROR_COLOR,
-              actuator: () => this.deleteRequest({ requestData: requestData }),
-            })}
+            {this.state.selectedRequestStatus !== "inporgress"
+              ? null
+              : this.renderActionNode({
+                  title: "Delete request",
+                  isValidated: false,
+                  color: process.env.REACT_APP_ERROR_COLOR,
+                  actuator: () =>
+                    this.deleteRequest({ requestData: requestData }),
+                })}
           </div>
         );
       default:
