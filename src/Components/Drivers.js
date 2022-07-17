@@ -225,6 +225,7 @@ class Drivers extends Component {
               <td>#</td>
               <td>Profile</td>
               <td>Name</td>
+              <td>Surname</td>
               <td>Gender</td>
               <td>Phone</td>
               <td>State</td>
@@ -258,9 +259,8 @@ class Drivers extends Component {
                         />
                       </div>
                     </td>
-                    <td>
-                      {user["name"]} {user["surname"]}
-                    </td>
+                    <td>{user["name"]}</td>
+                    <td>{user["surname"]}</td>
                     <td>{user["gender"]}</td>
                     <td>{user["phone_number"]}</td>
                     <td
@@ -333,6 +333,7 @@ class Drivers extends Component {
               <td>#</td>
               <td>Profile</td>
               <td>Name</td>
+              <td>Surname</td>
               <td>Gender</td>
               <td>Phone</td>
               <td>State</td>
@@ -366,9 +367,8 @@ class Drivers extends Component {
                         />
                       </div>
                     </td>
-                    <td>
-                      {user["name"]} {user["surname"]}
-                    </td>
+                    <td>{user["name"]}</td>
+                    <td>{user["surname"]}</td>
                     <td>{user["gender"]}</td>
                     <td>{user["phone_number"]}</td>
                     <td
@@ -441,6 +441,7 @@ class Drivers extends Component {
               <td>#</td>
               <td>Profile</td>
               <td>Name</td>
+              <td>Surname</td>
               <td>Gender</td>
               <td>Phone</td>
               <td>State</td>
@@ -474,9 +475,8 @@ class Drivers extends Component {
                         />
                       </div>
                     </td>
-                    <td>
-                      {user["name"]} {user["surname"]}
-                    </td>
+                    <td>{user["name"]}</td>
+                    <td>{user["surname"]}</td>
                     <td>{user["gender"]}</td>
                     <td>{user["phone_number"]}</td>
                     <td
@@ -535,6 +535,7 @@ class Drivers extends Component {
               <td>#</td>
               <td>Profile</td>
               <td>Name</td>
+              <td>Surname</td>
               <td>City</td>
               <td>Phone</td>
               <td>Documents</td>
@@ -560,9 +561,8 @@ class Drivers extends Component {
                       />
                     </div>
                   </td>
-                  <td>
-                    {user["name"]} {user["surname"]}
-                  </td>
+                  <td>{user["name"]}</td>
+                  <td>{user["surname"]}</td>
                   <td>{user["city"]}</td>
                   <td>+{user["phone_number"]}</td>
                   <td

@@ -244,7 +244,7 @@
 
 .titleRequestModal {
   font-family: 'MoveBold', sans-serif;
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .clientNameModal {
@@ -377,6 +377,71 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+
+/* Item */
+.shoppingListContainer {
+  /* border: 1px solid black; */
+  margin-top: 25px;
+  margin-bottom: 65px;
+}
+
+.itemToShopContainer {
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+}
+
+.itemPictureContainer {
+  border: 1px solid #f0f0f0;
+  width: 100px;
+  height: 80px;
+  margin-right: 20px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.itemPictureContainer:hover {
+  border-color: #096ed4;
+}
+
+.trueItemPicture {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.itemInfosContainer {
+  /* border: 1px solid black; */
+  width: 70%;
+  margin-right: 20px;
+}
+
+.itemToShopName {
+  font-family: 'MoveTextMedium', sans-serif;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.itemStoreName {
+  font-size: 15px;
+  margin-bottom: 15px;
+}
+
+.itemPriceQty {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 15px;
+}
+
+.itemBoughtState {
+  font-size: 15px;
+  color: #11A05A;
 }
 
 /* Modal request */

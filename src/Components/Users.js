@@ -82,7 +82,9 @@ class Users extends Component {
   getReadableDate(dateString) {
     let dateRef = new Date(dateString);
 
-    return `${dateRef.toLocaleDateString("en-US", { weekday: "long" })}, ${
+    return `${dateRef
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .substring(0, 3)}, ${
       dateRef.getDate() > 9 ? dateRef.getDate() : `0${dateRef.getDate()}`
     }-${
       dateRef.getMonth() + 1 > 9
@@ -126,6 +128,7 @@ class Users extends Component {
                   <td>#</td>
                   <td>Profile</td>
                   <td>Name</td>
+                  <td>Surname</td>
                   <td>Gender</td>
                   <td>Phone number</td>
                   <td>Email</td>
@@ -152,8 +155,15 @@ class Users extends Component {
                           />
                         </div>
                       </td>
-                      <td>{`${user["name"]} ${user["surname"]}`}</td>
-                      <td>{user["gender"]}</td>
+                      <td>{user["name"]}</td>
+                      <td>{user["surname"]}</td>
+                      <td>
+                        {/^male/i.test(user["gender"])
+                          ? "Male"
+                          : /unk/i.test(user["gender"])
+                          ? "Unknown"
+                          : "Female"}
+                      </td>
                       <td>{user["phone_number"]}</td>
                       <td>{user["email"]}</td>
                       <td
