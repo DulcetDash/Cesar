@@ -28,6 +28,7 @@ class Home extends Component {
       isLoading: true,
       hasError: false,
       summaryMetaData: [],
+      crosshairValues: [],
     };
   }
 
@@ -43,7 +44,7 @@ class Home extends Component {
           admin_fp: "abc",
         })
         .then(function (response) {
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.response !== "error") {
             //SUCCESS
             that.setState({
@@ -131,6 +132,29 @@ class Home extends Component {
     }-${dateRef.getFullYear()} at ${dateRef.getHours()}:${dateRef.getMinutes()}`;
   }
 
+  /**
+   * Event handler for onNearestX.
+   * @param {Object} value Selected value.
+   * @param {index} index Index of the value in the data array.
+   * @private
+   */
+  _onNearestX = (value, { index }) => {
+    let DATA = [
+      this.state.summaryMetaData.today_graph_data.successful_requests,
+      this.state.summaryMetaData.today_graph_data.cancelled_requests,
+    ];
+    //....
+    this.setState({ crosshairValues: DATA.map((d) => d[index]) });
+  };
+
+  /**
+   * Event handler for onMouseLeave.
+   * @private
+   */
+  _onMouseLeave = () => {
+    this.setState({ crosshairValues: [] });
+  };
+
   render() {
     return (
       <div className={classes.container}>
@@ -161,7 +185,15 @@ class Home extends Component {
               </div>
             ) : this.state.summaryMetaData.length === 0 &&
               this.state.isLoading === false ? (
-              <div className={classes.emptyDriversShower}>
+              <div
+                className={classes.emptyDriversShower}
+                style={{
+                  marginTop: 0,
+                  height: "500px",
+                  marginLeft: 0,
+                  marginRight: 0,
+                }}
+              >
                 No data found, please try refreshing.
               </div>
             ) : (
@@ -198,46 +230,49 @@ class Home extends Component {
                   />
 
                   <VerticalBarSeries
-                    data={[
-                      { x: 10, y: 90 },
-                      { x: 12, y: 890 },
-                    ]}
+                    data={
+                      this.state.summaryMetaData.today_graph_data
+                        .successful_requests
+                    }
                     curve={"curveMonotoneX"}
                     style={{
                       strokeLinejoin: "round",
                       strokeWidth: 2,
                     }}
                     color={process.env.REACT_APP_PRIMARY_COLOR}
-                    // onNearestX={this._onNearestX}
-                    // onValueMouseOut={this._onMouseLeave}
+                    onNearestX={this._onNearestX}
+                    onValueMouseOut={this._onMouseLeave}
                   />
 
                   {/* Show cancelled total trips */}
                   <VerticalBarSeries
-                    data={[]}
+                    data={
+                      this.state.summaryMetaData.today_graph_data
+                        .cancelled_requests
+                    }
                     curve={"curveMonotoneX"}
                     style={{
                       strokeLinejoin: "round",
                       strokeWidth: 2,
                     }}
                     color={process.env.REACT_APP_ERROR_COLOR}
-                    // onNearestX={this._onNearestX}
-                    // onValueMouseOut={this._onMouseLeave}
+                    onNearestX={this._onNearestX}
+                    onValueMouseOut={this._onMouseLeave}
                   />
 
                   {/* Crosshair */}
-                  {/* <Crosshair
-                  values={this.state.crosshairValues}
-                  className={"test-class-name"}
-                  titleFormat={(d) => ({
-                    title: "Trips",
-                    value: d[0].y + d[1].y,
-                  })}
-                  itemsFormat={(d) => [
-                    { title: "Successful", value: d[1].y },
-                    { title: "Cancelled", value: d[0].y },
-                  ]}
-                /> */}
+                  <Crosshair
+                    values={this.state.crosshairValues}
+                    className={"test-class-name"}
+                    titleFormat={(d) => ({
+                      title: "Requests",
+                      value: d[0].y + d[1].y,
+                    })}
+                    itemsFormat={(d) => [
+                      { title: "Successful", value: d[0].y },
+                      { title: "Cancelled", value: d[1].y },
+                    ]}
+                  />
                 </FlexibleXYPlot>
               </div>
             )}
@@ -256,7 +291,15 @@ class Home extends Component {
             </div>
           ) : this.state.summaryMetaData.length === 0 &&
             this.state.isLoading === false ? (
-            <div className={classes.emptyDriversShower}>
+            <div
+              className={classes.emptyDriversShower}
+              style={{
+                marginTop: "120px",
+                height: "500px",
+                marginLeft: 0,
+                marginRight: 0,
+              }}
+            >
               No data found, please try refreshing.
             </div>
           ) : (
