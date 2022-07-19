@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { UpdateSuccessfullLoginDetails } from "../Redux/HomeActionsCreators";
+
 import classes from "../Styles/Requests.module.css";
 import DrawerMenu from "./DrawerMenu";
 import Loader from "react-loader-spinner";
@@ -53,6 +57,27 @@ class Requests extends Component {
       hasError: false, //If the request encountered an error
       isLoading: true, //Default: true
     };
+  }
+
+  componentWillMount() {
+    //! Check for the token_j and admin_fp
+    if (
+      this.props.App.loginData.admin_fp !== undefined &&
+      this.props.App.loginData !== null &&
+      this.props.App.loginData.token_j !== undefined &&
+      this.props.App.loginData.token_j !== null
+    ) {
+      //ok
+    } //Invalid data
+    else {
+      //!Log out
+      this.props.UpdateSuccessfullLoginDetails(false);
+      window.location.href = "/";
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalUpdater);
   }
 
   //Update the selected focused request
@@ -161,49 +186,62 @@ class Requests extends Component {
     }
   }
 
-  componentDidMount() {
+  //Data getter
+  dataGetter() {
     let that = this;
-
-    this.intervalUpdater = setInterval(() => {
-      axios
-        .post(`${process.env.REACT_APP_BRIDGE}/getGeneralRequestsList`, {
-          admin_fp: "abc",
-        })
-        .then(function (response) {
-          //   console.log(response.data.response);
-          if (
-            response.data.response === "error" ||
-            Object.keys(response.data.response).length === 0
-          ) {
-            that.setState({
-              hasError: false,
-              requestsMetaData: [],
-              isLoading: false,
-              selectedRequestForFocus: {},
-              shouldShowFocusModal: false,
-            });
-          } //Has some data
-          else {
-            that.setState({
-              hasError: false,
-              requestsMetaData: response.data.response,
-              isLoading: false,
-            });
-            //!Update the selected request as well
-            that.updateSelectedFocusedRequest({
-              requestsMeta: response.data.response,
-            });
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
+    axios
+      .post(`${process.env.REACT_APP_BRIDGE}/getGeneralRequestsList`, {
+        admin_fp: that.props.App.loginData.admin_fp,
+        token_j: that.props.App.loginData.token_j,
+      })
+      .then(function (response) {
+        //   console.log(response.data.response);
+        if (response.data.response === "error_Logout") {
+          //!Log out
+          that.props.UpdateSuccessfullLoginDetails(false);
+          window.location.href = "/";
+        } else if (
+          response.data.response === "error" ||
+          Object.keys(response.data.response).length === 0
+        ) {
           that.setState({
             hasError: false,
             requestsMetaData: [],
             isLoading: false,
+            selectedRequestForFocus: {},
+            shouldShowFocusModal: false,
           });
+        } //Has some data
+        else {
+          that.setState({
+            hasError: false,
+            requestsMetaData: response.data.response,
+            isLoading: false,
+          });
+          //!Update the selected request as well
+          that.updateSelectedFocusedRequest({
+            requestsMeta: response.data.response,
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        that.setState({
+          hasError: false,
+          requestsMetaData: [],
+          isLoading: false,
         });
-    }, 5000);
+      });
+  }
+
+  componentDidMount() {
+    let that = this;
+
+    that.dataGetter();
+
+    this.intervalUpdater = setInterval(() => {
+      that.dataGetter();
+    }, process.env.REACT_APP_BASIC_INTERVAL);
   }
 
   //To update the request category
@@ -2050,4 +2088,17 @@ class Requests extends Component {
   }
 }
 
-export default Requests;
+const mapStateToProps = (state) => {
+  const { App } = state;
+  return { App };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      UpdateSuccessfullLoginDetails,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Requests);

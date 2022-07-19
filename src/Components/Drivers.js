@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { UpdateSuccessfullLoginDetails } from "../Redux/HomeActionsCreators";
+
 import DrawerMenu from "./DrawerMenu";
 import classes from "../Styles/Drivers.module.css";
 import profile from "../Images/user.png";
@@ -26,20 +30,40 @@ class Drivers extends Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    //! Check for the token_j and admin_fp
+    if (
+      this.props.App.loginData.admin_fp !== undefined &&
+      this.props.App.loginData !== null &&
+      this.props.App.loginData.token_j !== undefined &&
+      this.props.App.loginData.token_j !== null
+    ) {
+      //ok
+    } //Invalid data
+    else {
+      //!Log out
+      this.props.UpdateSuccessfullLoginDetails(false);
+      window.location.href = "/";
+    }
+  }
+
+  //Data getter
+  dataGetter() {
     let that = this;
-
-    this.intervalUpdater = setInterval(() => {
-      that.setState({
-        isLoading: true,
-      });
-      axios
-        .post(`${process.env.REACT_APP_BRIDGE}/getDriversList`, {
-          admin_fp: "abc",
-        })
-        .then(function (response) {
-          // console.log(response.data);
-
+    axios
+      .post(`${process.env.REACT_APP_BRIDGE}/getDriversList`, {
+        admin_fp: that.props.App.loginData.admin_fp,
+        token_j: that.props.App.loginData.token_j,
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        if (response.data.response === "error_Logout") {
+          //!Log out
+          that.props.UpdateSuccessfullLoginDetails(false);
+          window.location.href = "/";
+        }
+        //...
+        else {
           if (that.state.selectedDriverFocus !== false) {
             //Has selected a driver
             response.data.response.registered.map((el) => {
@@ -57,16 +81,34 @@ class Drivers extends Component {
             usersData: response.data.response,
             isLoading: false,
           });
-        })
-        .catch(function (error) {
-          console.log(error);
-          that.setState({
-            hasError: true,
-            usersData: { registered: [], awaiting: [] },
-            isLoading: false,
-          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        that.setState({
+          hasError: true,
+          usersData: { registered: [], awaiting: [] },
+          isLoading: false,
         });
-    }, 5000);
+      });
+  }
+
+  componentDidMount() {
+    let that = this;
+
+    that.dataGetter();
+
+    this.intervalUpdater = setInterval(() => {
+      that.setState({
+        isLoading: true,
+      });
+
+      that.dataGetter();
+    }, process.env.REACT_APP_BASIC_INTERVAL);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalUpdater);
   }
 
   updateSelectedDriversCat(category) {
@@ -849,7 +891,8 @@ class Drivers extends Component {
 
                   let that = this;
                   console.log({
-                    admin_fp: "abc",
+                    admin_fp: that.props.App.loginData.admin_fp,
+                    token_j: that.props.App.loginData.token_j,
                     operation:
                       this.state.selectedDriverFocus["isDriverSuspended"] ===
                       false
@@ -861,7 +904,8 @@ class Drivers extends Component {
                     .post(
                       `${process.env.REACT_APP_BRIDGE}/suspendUnsuspendDriver`,
                       {
-                        admin_fp: "abc",
+                        admin_fp: that.props.App.loginData.admin_fp,
+                        token_j: that.props.App.loginData.token_j,
                         operation:
                           this.state.selectedDriverFocus[
                             "isDriverSuspended"
@@ -1091,7 +1135,8 @@ class Drivers extends Component {
 
                   let that = this;
                   console.log({
-                    admin_fp: "abc",
+                    admin_fp: that.props.App.loginData.admin_fp,
+                    token_j: that.props.App.loginData.token_j,
                     operation:
                       this.state.selectedDriverFocus["isDriverSuspended"] ===
                       false
@@ -1103,7 +1148,8 @@ class Drivers extends Component {
                     .post(
                       `${process.env.REACT_APP_BRIDGE}/approveDriverAccount`,
                       {
-                        admin_fp: "abc",
+                        admin_fp: that.props.App.loginData.admin_fp,
+                        token_j: that.props.App.loginData.token_j,
                         driverData: this.state.selectedDriverFocus,
                       }
                     )
@@ -1307,4 +1353,17 @@ class Drivers extends Component {
   }
 }
 
-export default Drivers;
+const mapStateToProps = (state) => {
+  const { App } = state;
+  return { App };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      UpdateSuccessfullLoginDetails,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Drivers);

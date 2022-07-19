@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { UpdateSuccessfullLoginDetails } from "../Redux/HomeActionsCreators";
+
 import classes from "../Styles/Home.module.css";
 import DrawerMenu from "./DrawerMenu";
 import Loader from "react-loader-spinner";
@@ -16,6 +20,7 @@ import {
   Crosshair,
 } from "react-vis";
 import "react-vis/dist/style.css";
+import LoginButton from "./LoginButton";
 const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 const axios = require("axios").default;
@@ -32,44 +37,80 @@ class Home extends Component {
     };
   }
 
-  componentDidMount() {
-    let that = this;
+  componentWillMount() {
+    //! Check for the token_j and admin_fp
+    if (
+      this.props.App.loginData.admin_fp !== undefined &&
+      this.props.App.loginData !== null &&
+      this.props.App.loginData.token_j !== undefined &&
+      this.props.App.loginData.token_j !== null
+    ) {
+      //ok
+    } //Invalid data
+    else {
+      //!Log out
+      this.props.UpdateSuccessfullLoginDetails(false);
+      window.location.href = "/";
+    }
+  }
 
-    this.intervalUpdater = setInterval(() => {
-      that.setState({
-        isLoading: true,
-      });
-      axios
-        .post(`${process.env.REACT_APP_BRIDGE}/getSummaryData`, {
-          admin_fp: "abc",
-        })
-        .then(function (response) {
-          // console.log(response.data);
-          if (response.data.response !== "error") {
-            //SUCCESS
-            that.setState({
-              hasError: false,
-              summaryMetaData: response.data.response,
-              isLoading: false,
-            });
-          } //error
-          else {
-            that.setState({
-              hasError: true,
-              summaryMetaData: [],
-              isLoading: false,
-            });
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
+  //Get general summary data
+  getGeneralSummary() {
+    let that = this;
+    axios
+      .post(`${process.env.REACT_APP_BRIDGE}/getSummaryData`, {
+        admin_fp: that.props.App.loginData.admin_fp,
+        token_j: that.props.App.loginData.token_j,
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        if (response.data.response === "error_Logout") {
+          //!Log out
+          that.props.UpdateSuccessfullLoginDetails(false);
+          window.location.href = "/";
+        } else if (response.data.response !== "error") {
+          //SUCCESS
+          that.setState({
+            hasError: false,
+            summaryMetaData: response.data.response,
+            isLoading: false,
+          });
+        }
+        //error
+        else {
           that.setState({
             hasError: true,
             summaryMetaData: [],
             isLoading: false,
           });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        that.setState({
+          hasError: true,
+          summaryMetaData: [],
+          isLoading: false,
         });
-    }, 5000);
+      });
+  }
+
+  componentDidMount() {
+    let that = this;
+
+    that.getGeneralSummary();
+
+    this.intervalUpdater = setInterval(() => {
+      that.setState({
+        isLoading: true,
+      });
+
+      that.getGeneralSummary();
+    }, process.env.REACT_APP_BASIC_INTERVAL + 105);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalUpdater);
   }
 
   basicHeader() {
@@ -92,7 +133,9 @@ class Home extends Component {
           <div className={classes.headerTitle}>Summary</div>
         </div>
         {/* Loader */}
-        <div className={classes.rightCategoriesDrivers}></div>
+        <div className={classes.rightCategoriesDrivers}>
+          <div style={{ fontSize: "13px" }}>Updates every 2min</div>
+        </div>
       </div>
     );
   }
@@ -848,4 +891,17 @@ class Home extends Component {
   }
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+  const { App } = state;
+  return { App };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      UpdateSuccessfullLoginDetails,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { UpdateSuccessfullLoginDetails } from "../Redux/HomeActionsCreators";
+
 import DrawerMenu from "./DrawerMenu";
 import classes from "../Styles/Users.module.css";
 import profile from "../Images/user.png";
@@ -16,34 +20,71 @@ class Users extends Component {
     };
   }
 
-  componentDidMount() {
-    let that = this;
+  componentWillMount() {
+    //! Check for the token_j and admin_fp
+    if (
+      this.props.App.loginData.admin_fp !== undefined &&
+      this.props.App.loginData !== null &&
+      this.props.App.loginData.token_j !== undefined &&
+      this.props.App.loginData.token_j !== null
+    ) {
+      //ok
+    } //Invalid data
+    else {
+      //!Log out
+      this.props.UpdateSuccessfullLoginDetails(false);
+      window.location.href = "/";
+    }
+  }
 
-    this.intervalUpdater = setInterval(() => {
-      that.setState({
-        isLoading: true,
-      });
-      axios
-        .post(`${process.env.REACT_APP_BRIDGE}/getUsersList`, {
-          admin_fp: "abc",
-        })
-        .then(function (response) {
-          //   console.log(response);
+  componentWillUnmount() {
+    clearInterval(this.intervalUpdater);
+  }
+
+  //Data getter
+  dataGetter() {
+    let that = this;
+    axios
+      .post(`${process.env.REACT_APP_BRIDGE}/getUsersList`, {
+        admin_fp: that.props.App.loginData.admin_fp,
+        token_j: that.props.App.loginData.token_j,
+      })
+      .then(function (response) {
+        //   console.log(response);
+        if (response.data.response === "error_Logout") {
+          //!Log out
+          that.props.UpdateSuccessfullLoginDetails(false);
+          window.location.href = "/";
+        } else {
           that.setState({
             hasError: false,
             usersData: response.data.response,
             isLoading: false,
           });
-        })
-        .catch(function (error) {
-          console.log(error);
-          that.setState({
-            hasError: true,
-            usersData: [],
-            isLoading: false,
-          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        that.setState({
+          hasError: true,
+          usersData: [],
+          isLoading: false,
         });
-    }, 5000);
+      });
+  }
+
+  componentDidMount() {
+    let that = this;
+
+    that.dataGetter();
+
+    this.intervalUpdater = setInterval(() => {
+      that.setState({
+        isLoading: true,
+      });
+
+      that.dataGetter();
+    }, process.env.REACT_APP_BASIC_INTERVAL);
   }
 
   basicHeader() {
@@ -194,4 +235,17 @@ class Users extends Component {
   }
 }
 
-export default Users;
+const mapStateToProps = (state) => {
+  const { App } = state;
+  return { App };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      UpdateSuccessfullLoginDetails,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Users);

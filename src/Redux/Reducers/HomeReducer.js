@@ -23,14 +23,12 @@ const HomeReducer = (state = INIT_STATE, action) => {
           action.payload.admin_fp !== undefined &&
           action.payload.admin_fp !== null
         ) {
-          newState.loginData.admin_data = action.payload;
-          newState.loginData.isLoggedIn = true;
+          newState.loginData = action.payload;
 
           return { ...state, ...newState };
         } //No change
         else {
-          newState.loginData.admin_data = null;
-          newState.loginData.isLoggedIn = false;
+          newState.loginData = false;
           return { ...state, ...newState };
         }
 
@@ -40,8 +38,7 @@ const HomeReducer = (state = INIT_STATE, action) => {
   } catch (error) {
     console.log(error);
     //!Force log out
-    newState.loginData.isLoggedIn = false;
-    newState.loginData.admin_data = null;
+    newState.loginData = false;
     //...
     window.location.href = "/";
     //..

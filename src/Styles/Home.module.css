@@ -87,7 +87,7 @@
   display: flex;
   flex-direction: row;
   width: 530px;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 /* Header */

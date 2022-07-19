@@ -14,6 +14,7 @@ import Home from "./Components/Home";
 import Users from "./Components/Users";
 import Drivers from "./Components/Drivers";
 import Requests from "./Components/Requests";
+import Login from "./Components/Login";
 
 export const transformCircular = createTransform(
   (inboundState, key) => stringify(inboundState),
@@ -35,12 +36,15 @@ let persistor = persistStore(store);
 function App() {
   return (
     <Provider store={store}>
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/users" exact component={Users} />
-        <Route path="/drivers" exact component={Drivers} />
-        <Route path="/requests" exact component={Requests} />
-      </Switch>
+      <PersistGate loading={null} persistor={persistor}>
+        <Switch>
+          <Route path="/" exact component={Login} />
+          <Route path="/home" exact component={Home} />
+          <Route path="/users" exact component={Users} />
+          <Route path="/drivers" exact component={Drivers} />
+          <Route path="/requests" exact component={Requests} />
+        </Switch>
+      </PersistGate>
     </Provider>
   );
 }
