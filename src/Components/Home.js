@@ -20,7 +20,6 @@ import {
   Crosshair,
 } from "react-vis";
 import "react-vis/dist/style.css";
-import LoginButton from "./LoginButton";
 const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 const axios = require("axios").default;
