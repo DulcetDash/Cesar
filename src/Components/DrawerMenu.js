@@ -69,7 +69,7 @@ class DrawerMenu extends Component {
         {/* Elements */}
         {this.menuElement({
           title: "Home",
-          link: "/",
+          link: "/home",
           isSelected: /\/$/i.test(window.location.href),
         })}
         {this.menuElement({
