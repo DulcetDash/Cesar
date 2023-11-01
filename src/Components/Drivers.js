@@ -174,29 +174,29 @@ class Drivers extends Component {
             </div>
             <div
               style={
-                this.state.selectedDriversCategory === "delivery"
-                  ? selectedCategoryStyle
-                  : {}
-              }
-              onClick={() => this.updateSelectedDriversCat("delivery")}>
-              Delivery{" - "}
-              {
-                this.state.usersData.registered.filter(
-                  (el) => el["operation_clearances"] === "DELIVERY"
-                ).length
-              }
-            </div>
-            <div
-              style={
                 this.state.selectedDriversCategory === "shopping"
-                  ? selectedCategoryStyle
-                  : {}
+                  ? { opacity: 0, cursor: "default", ...selectedCategoryStyle }
+                  : { opacity: 0, cursor: "default" }
               }
               onClick={() => this.updateSelectedDriversCat("shopping")}>
               Shopping{" - "}
               {
                 this.state.usersData.registered.filter(
                   (el) => el["operation_clearances"] === "SHOPPING"
+                ).length
+              }
+            </div>
+            <div
+              style={
+                this.state.selectedDriversCategory === "delivery"
+                  ? selectedCategoryStyle
+                  : {}
+              }
+              onClick={() => this.updateSelectedDriversCat("delivery")}>
+              Courier{" - "}
+              {
+                this.state.usersData.registered.filter(
+                  (el) => el["operation_clearances"] === "DELIVERY"
                 ).length
               }
             </div>
@@ -623,16 +623,7 @@ class Drivers extends Component {
                   toast.loading("Suspending the driver.");
 
                   let that = this;
-                  console.log({
-                    admin_fp: that.props.App.loginData.admin_fp,
-                    token_j: that.props.App.loginData.token_j,
-                    operation:
-                      this.state.selectedDriverFocus?.isDriverSuspended ===
-                      false
-                        ? "suspended"
-                        : "unsuspend",
-                    driver_id: this.state.selectedDriverFocus?._id,
-                  });
+
                   axios
                     .post(
                       `${process.env.REACT_APP_BRIDGE}/suspendUnsuspendDriver`,

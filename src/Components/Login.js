@@ -43,7 +43,7 @@ class Login extends Component {
 
         <div className={classes.contentContainer}>
           <div className={classes.logoContainer}>
-            <img alt="Orniss" src={logoWhite} />
+            <img alt="DulcetDash" src={logoWhite} />
           </div>
           <div className={classes.textualContainer}>
             {this.state.isSecond_step === false ? (
@@ -211,7 +211,7 @@ class Login extends Component {
         </div>
         {/* Copyright */}
         <div className={classes.copyright}>
-          <div>© 2022 Orniss Technologies CC.</div>
+          <div>© 2023 DulcetDash.</div>
           <div>{process.env.REACT_APP_CESAR_VERSION}</div>
         </div>
       </div>

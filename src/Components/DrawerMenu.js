@@ -49,8 +49,7 @@ class DrawerMenu extends Component {
               }
             : () => (window.location.href = link)
         }
-        style={isSelected ? selectedStyle : {}}
-      >
+        style={isSelected ? selectedStyle : {}}>
         {icon}
         <span>{title}</span>
       </div>
@@ -142,7 +141,7 @@ class DrawerMenu extends Component {
         })}
         {/* Copyright */}
         <div className={classes.copyright}>
-          <div>© 2022 Orniss Technologies CC.</div>
+          <div>© 2023 DulcetDash.</div>
         </div>
       </div>
     );
