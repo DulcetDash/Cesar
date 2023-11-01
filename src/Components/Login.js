@@ -165,7 +165,7 @@ class Login extends Component {
                               }
                             )
                             .then(function (response) {
-                              // console.log(response.data);
+                              console.log(response.data);
                               toast.loading("Redirecting you to home");
                               if (response.data.response === "success") {
                                 //Success
@@ -203,8 +203,7 @@ class Login extends Component {
                             });
                         }
                       }
-                }
-              >
+                }>
                 Next
               </div>
             )}

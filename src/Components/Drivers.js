@@ -22,10 +22,10 @@ class Drivers extends Component {
 
     this.state = {
       isLoading: true,
-      selectedDriversCategory: "ride", //can be ride, delivery, shopping or awaiting
+      selectedDriversCategory: "delivery", //can be ride, delivery, shopping or awaiting
       hasError: false,
       usersData: { registered: [], awaiting: [] },
-      shouldShowFilePreview: false, //TO show thye file preview or not
+      shouldShowFilePreview: false, //To show thye file preview or not
       selectedDriverFocus: false, //The driver data selected
     };
   }
@@ -42,14 +42,15 @@ class Drivers extends Component {
     } //Invalid data
     else {
       //!Log out
-      this.props.UpdateSuccessfullLoginDetails(false);
-      window.location.href = "/";
+      // this.props.UpdateSuccessfullLoginDetails(false);
+      // window.location.href = "/";
     }
   }
 
   //Data getter
   dataGetter() {
     let that = this;
+    console.log(that.props.App);
     axios
       .post(`${process.env.REACT_APP_BRIDGE}/getDriversList`, {
         admin_fp: that.props.App.loginData.admin_fp,
@@ -59,8 +60,8 @@ class Drivers extends Component {
         // console.log(response.data);
         if (response.data.response === "error_Logout") {
           //!Log out
-          that.props.UpdateSuccessfullLoginDetails(false);
-          window.location.href = "/";
+          // that.props.UpdateSuccessfullLoginDetails(false);
+          // window.location.href = "/";
         }
         //...
         else {
@@ -132,8 +133,7 @@ class Drivers extends Component {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           {this.state.selectedDriverFocus !== false ? (
             <div
               className={classes.headerTitle}
@@ -147,8 +147,7 @@ class Drivers extends Component {
                 this.setState({
                   selectedDriverFocus: false,
                 });
-              }}
-            >
+              }}>
               <ArrowBack />
               {this.state.selectedDriverFocus["name"]}{" "}
               {this.state.selectedDriverFocus["surname"]}
@@ -163,11 +162,9 @@ class Drivers extends Component {
             <div
               style={
                 this.state.selectedDriversCategory === "ride"
-                  ? selectedCategoryStyle
-                  : {}
-              }
-              onClick={() => this.updateSelectedDriversCat("ride")}
-            >
+                  ? { opacity: 0, cursor: "default", ...selectedCategoryStyle }
+                  : { opacity: 0, cursor: "default" }
+              }>
               Ride{" - "}
               {
                 this.state.usersData.registered.filter(
@@ -181,8 +178,7 @@ class Drivers extends Component {
                   ? selectedCategoryStyle
                   : {}
               }
-              onClick={() => this.updateSelectedDriversCat("delivery")}
-            >
+              onClick={() => this.updateSelectedDriversCat("delivery")}>
               Delivery{" - "}
               {
                 this.state.usersData.registered.filter(
@@ -196,8 +192,7 @@ class Drivers extends Component {
                   ? selectedCategoryStyle
                   : {}
               }
-              onClick={() => this.updateSelectedDriversCat("shopping")}
-            >
+              onClick={() => this.updateSelectedDriversCat("shopping")}>
               Shopping{" - "}
               {
                 this.state.usersData.registered.filter(
@@ -212,8 +207,7 @@ class Drivers extends Component {
                   ? selectedCategoryStyle
                   : {}
               }
-              onClick={() => this.updateSelectedDriversCat("awaiting")}
-            >
+              onClick={() => this.updateSelectedDriversCat("awaiting")}>
               Awaiting approval{" - "}
               {this.state.usersData.awaiting.length}
             </div>
@@ -239,118 +233,10 @@ class Drivers extends Component {
   //Render the correct table for the data
   renderCorrectDataTable() {
     switch (this.state.selectedDriversCategory) {
-      case "ride":
-        if (
-          this.state.usersData.registered.filter(
-            (user) => user["operation_clearances"] === "RIDE"
-          ).length === 0
-        )
-          return (
-            <div className={classes.emptyDriversShower}>
-              {this.state.isLoading ? (
-                <Loader
-                  type="TailSpin"
-                  color="#000"
-                  height={50}
-                  width={50}
-                  timeout={300000000} //3 secs
-                />
-              ) : (
-                "No registered ride drivers yet."
-              )}
-            </div>
-          );
-
-        return (
-          <table className={classes.tableMain}>
-            <tr className={classes.headerTable}>
-              <td>#</td>
-              <td>Profile</td>
-              <td>Name</td>
-              <td>Surname</td>
-              <td>Gender</td>
-              <td>Phone</td>
-              <td>State</td>
-              <td>Taxi number</td>
-              <td>User type</td>
-              <td>Suspension</td>
-            </tr>
-
-            {/* Body */}
-            {this.state.usersData.registered
-              .filter((el) => el["operation_clearances"] === "RIDE")
-              .map((user, index) => {
-                let state = user["isDriverSuspended"]
-                  ? "offline"
-                  : user["operational_state"]["status"];
-
-                return (
-                  <tr
-                    key={index}
-                    className={classes.rowElementTable}
-                    onClick={() => this.updateSelectedDriverFocus(user)}
-                  >
-                    <td style={{ fontFamily: "MoveTextMedium" }}>
-                      {index + 1}
-                    </td>
-                    <td>
-                      <div className={classes.userProfileContainer}>
-                        <img
-                          alt="profile"
-                          src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${user["identification_data"]["profile_picture"]}`}
-                        />
-                      </div>
-                    </td>
-                    <td>{user["name"]}</td>
-                    <td>{user["surname"]}</td>
-                    <td>{user["gender"]}</td>
-                    <td>{user["phone_number"]}</td>
-                    <td
-                      style={
-                        state === "online"
-                          ? {
-                              backgroundColor:
-                                process.env.REACT_APP_PRIMARY_COLOR,
-                              color: "#fff",
-                              fontFamily: "MoveTextBold",
-                            }
-                          : {
-                              backgroundColor:
-                                process.env.REACT_APP_ERROR_COLOR,
-                              color: "#fff",
-                              fontFamily: "MoveTextMedium",
-                            }
-                      }
-                    >
-                      {state}
-                    </td>
-                    <td>{user["cars_data"][0]["taxi_number"]}</td>
-                    <td>Taxi driver</td>
-                    <td
-                      style={
-                        user["isDriverSuspended"] === false
-                          ? {
-                              color: process.env.REACT_APP_PRIMARY_COLOR,
-                              fontFamily: "MoveTextBold",
-                            }
-                          : {
-                              color: process.env.REACT_APP_ERROR_COLOR,
-                              fontFamily: "MoveTextMedium",
-                            }
-                      }
-                    >
-                      {user["isDriverSuspended"] ? "Suspended" : "Active"}
-                    </td>
-                  </tr>
-                );
-              })}
-          </table>
-        );
-
       case "delivery":
         if (
-          this.state.usersData.registered.filter(
-            (user) => user["operation_clearances"] === "DELIVERY"
+          this.state.usersData.registered.filter((user) =>
+            user?.operation_clearances?.includes("DELIVERY")
           ).length === 0
         )
           return (
@@ -386,18 +272,15 @@ class Drivers extends Component {
 
             {/* Body */}
             {this.state.usersData.registered
-              .filter((el) => el["operation_clearances"] === "DELIVERY")
+              .filter((el) => el?.operation_clearances?.includes("DELIVERY"))
               .map((user, index) => {
-                let state = user["isDriverSuspended"]
-                  ? "offline"
-                  : user["operational_state"]["status"];
+                let state = user?.isDriverSuspended ? "offline" : user?.status;
 
                 return (
                   <tr
                     key={index}
                     className={classes.rowElementTable}
-                    onClick={() => this.updateSelectedDriverFocus(user)}
-                  >
+                    onClick={() => this.updateSelectedDriverFocus(user)}>
                     <td style={{ fontFamily: "MoveTextMedium" }}>
                       {index + 1}
                     </td>
@@ -405,14 +288,14 @@ class Drivers extends Component {
                       <div className={classes.userProfileContainer}>
                         <img
                           alt="profile"
-                          src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${user["identification_data"]["profile_picture"]}`}
+                          src={user?.identification_data?.profile_picture}
                         />
                       </div>
                     </td>
-                    <td>{user["name"]}</td>
-                    <td>{user["surname"]}</td>
-                    <td>{user["gender"]}</td>
-                    <td>{user["phone_number"]}</td>
+                    <td>{user?.name}</td>
+                    <td>{user?.surname}</td>
+                    <td>{user?.gender}</td>
+                    <td>{user?.phone_number}</td>
                     <td
                       style={
                         state === "online"
@@ -428,15 +311,14 @@ class Drivers extends Component {
                               color: "#fff",
                               fontFamily: "MoveTextMedium",
                             }
-                      }
-                    >
+                      }>
                       {state}
                     </td>
-                    <td>{user["cars_data"][0]["plate_number"]}</td>
+                    <td>Plate number</td>
                     <td>Courier</td>
                     <td
                       style={
-                        user["isDriverSuspended"] === false
+                        !user?.isDriverSuspended
                           ? {
                               color: process.env.REACT_APP_PRIMARY_COLOR,
                               fontFamily: "MoveTextBold",
@@ -445,117 +327,8 @@ class Drivers extends Component {
                               color: process.env.REACT_APP_ERROR_COLOR,
                               fontFamily: "MoveTextMedium",
                             }
-                      }
-                    >
-                      {user["isDriverSuspended"] ? "Suspended" : "Active"}
-                    </td>
-                  </tr>
-                );
-              })}
-          </table>
-        );
-
-      case "shopping":
-        if (
-          this.state.usersData.registered.filter(
-            (user) => user["operation_clearances"] === "SHOPPING"
-          ).length === 0
-        )
-          return (
-            <div className={classes.emptyDriversShower}>
-              {this.state.isLoading ? (
-                <Loader
-                  type="TailSpin"
-                  color="#000"
-                  height={50}
-                  width={50}
-                  timeout={300000000} //3 secs
-                />
-              ) : (
-                "No registered shoppers yet."
-              )}
-            </div>
-          );
-
-        return (
-          <table className={classes.tableMain}>
-            <tr className={classes.headerTable}>
-              <td>#</td>
-              <td>Profile</td>
-              <td>Name</td>
-              <td>Surname</td>
-              <td>Gender</td>
-              <td>Phone</td>
-              <td>State</td>
-              <td>ID number</td>
-              <td>User type</td>
-              <td>Suspension</td>
-            </tr>
-
-            {/* Body */}
-            {this.state.usersData.registered
-              .filter((el) => el["operation_clearances"] === "SHOPPING")
-              .map((user, index) => {
-                let state = user["isDriverSuspended"]
-                  ? "offline"
-                  : user["operational_state"]["status"];
-
-                return (
-                  <tr
-                    key={index}
-                    className={classes.rowElementTable}
-                    onClick={() => this.updateSelectedDriverFocus(user)}
-                  >
-                    <td style={{ fontFamily: "MoveTextMedium" }}>
-                      {index + 1}
-                    </td>
-                    <td>
-                      <div className={classes.userProfileContainer}>
-                        <img
-                          alt="profile"
-                          src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${user["identification_data"]["profile_picture"]}`}
-                        />
-                      </div>
-                    </td>
-                    <td>{user["name"]}</td>
-                    <td>{user["surname"]}</td>
-                    <td>{user["gender"]}</td>
-                    <td>{user["phone_number"]}</td>
-                    <td
-                      style={
-                        state === "online"
-                          ? {
-                              backgroundColor:
-                                process.env.REACT_APP_PRIMARY_COLOR,
-                              color: "#fff",
-                              fontFamily: "MoveTextBold",
-                            }
-                          : {
-                              backgroundColor:
-                                process.env.REACT_APP_ERROR_COLOR,
-                              color: "#fff",
-                              fontFamily: "MoveTextMedium",
-                            }
-                      }
-                    >
-                      {state}
-                    </td>
-                    <td>{user["_id"].toUpperCase().substring(0, 10)}</td>
-                    <td>Shopper</td>
-                    <td
-                      style={
-                        user["isDriverSuspended"] === false
-                          ? {
-                              color: process.env.REACT_APP_PRIMARY_COLOR,
-                              fontFamily: "MoveTextBold",
-                            }
-                          : {
-                              color: process.env.REACT_APP_ERROR_COLOR,
-                              fontFamily: "MoveTextMedium",
-                            }
-                      }
-                    >
-                      {user["isDriverSuspended"] ? "Suspended" : "Active"}
+                      }>
+                      {user?.isDriverSuspended ? "Suspended" : "Active"}
                     </td>
                   </tr>
                 );
@@ -592,34 +365,30 @@ class Drivers extends Component {
                 <tr
                   key={index}
                   className={classes.rowElementTable}
-                  onClick={() => this.updateSelectedDriverFocus(user)}
-                >
+                  onClick={() => this.updateSelectedDriverFocus(user)}>
                   <td style={{ fontFamily: "MoveTextMedium" }}>{index + 1}</td>
                   <td>
                     <div className={classes.userProfileContainer}>
                       <img
                         alt="profile"
-                        src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${user["documents"]["driver_photo"]}`}
+                        src={user["documents"]["driver_photo"]}
                       />
                     </div>
                   </td>
                   <td>{user["name"]}</td>
                   <td>{user["surname"]}</td>
                   <td>{user["city"]}</td>
-                  <td>+{user["phone_number"]}</td>
+                  <td>{user["phone_number"]}</td>
                   <td
                     style={{
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       fontFamily: "MoveTextBold",
-                    }}
-                  >
+                    }}>
                     Uploaded
                   </td>
-                  <td>
-                    {user["driver_fingerprint"].toUpperCase().substring(0, 10)}
-                  </td>
+                  <td>{user["driver_fingerprint"].substring(0, 10)}</td>
                   <td>{user["nature_driver"]}</td>
-                  <td>{this.getReadableDate(user["date_applied"])}</td>
+                  <td>{this.getReadableDate(user["createdAt"])}</td>
                 </tr>
               );
             })}
@@ -651,32 +420,29 @@ class Drivers extends Component {
             <div className={classes.profilePicBrief}>
               <img
                 alt="profile"
-                src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${this.state.selectedDriverFocus["identification_data"]["profile_picture"]}`}
+                src={this.state.selectedDriverFocus?.documents?.driver_photo}
                 className={classes.trueBriefImage}
               />
             </div>
             <div className={classes.textualInfosBrief}>
               {/* Name */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["name"],
+                title: this.state.selectedDriverFocus?.name,
                 label: "Name",
               })}
               {/* Surname */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["surname"],
+                title: this.state.selectedDriverFocus?.surname,
                 label: "Surname",
               })}
               {/* Gender */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["gender"],
+                title: this.state.selectedDriverFocus?.gender,
                 label: "Gender",
               })}
               {/* Title */}
               {this.renderInformationWithLabel({
-                title:
-                  this.state.selectedDriverFocus["identification_data"][
-                    "title"
-                  ],
+                title: this.state.selectedDriverFocus?.title,
                 label: "Title",
               })}
             </div>
@@ -684,27 +450,24 @@ class Drivers extends Component {
             <div className={classes.textualInfosBrief}>
               {/* Email */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["email"],
+                title: this.state.selectedDriverFocus?.email,
                 label: "Email",
               })}
               {/* Rating */}
               {this.renderInformationWithLabel({
-                title:
-                  this.state.selectedDriverFocus["identification_data"][
-                    "rating"
-                  ],
+                title: this.state.selectedDriverFocus?.rating,
                 label: "Rating",
               })}
               {/* clearance */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["operation_clearances"],
+                title: this.state.selectedDriverFocus?.operation_clearances,
                 label: "Operation clearance",
                 color: process.env.REACT_APP_SECONDARY_COLOR,
               })}
               {/* Surname */}
               {this.renderInformationWithLabel({
                 title: this.getReadableDate(
-                  this.state.selectedDriverFocus["date_registered"]
+                  this.state.selectedDriverFocus?.createdAt
                 ),
                 label: "Date registered",
               })}
@@ -713,36 +476,35 @@ class Drivers extends Component {
             <div className={classes.textualInfosBrief}>
               {/* Personal ID */}
               {this.renderInformationWithLabel({
-                title:
-                  this.state.selectedDriverFocus["identification_data"][
-                    "personal_id_number"
-                  ],
+                title: this.state.selectedDriverFocus?.identification_number,
                 label: "Personal ID",
               })}
               {/* Phone */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["phone_number"],
+                title: this.state.selectedDriverFocus?.phone_number,
                 label: "Phone number",
               })}
               {/* Account state */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["identification_data"][
-                  "isAccount_verified"
-                ]
-                  ? "Verified"
-                  : "Not verified",
+                title:
+                  this.state.selectedDriverFocus?.account_state === "valid"
+                    ? "Valid"
+                    : "Not verified",
                 label: "Account state",
+                color:
+                  this.state.selectedDriverFocus?.account_state === "valid"
+                    ? process.env.REACT_APP_PRIMARY_COLOR
+                    : process.env.REACT_APP_ERROR_COLOR,
               })}
               {/* Status */}
               {isShoppingDriver
                 ? this.renderInformationWithLabel({
-                    title: this.state.selectedDriverFocus["isDriverSuspended"]
+                    title: this.state.selectedDriverFocus?.isDriverSuspended
                       ? "Suspended"
-                      : this.state.selectedDriverFocus["operational_state"][
-                          "status"
-                        ],
+                      : this.state.selectedDriverFocus?.operational_state
+                          ?.status,
                     label: "Status",
-                    color: this.state.selectedDriverFocus["isDriverSuspended"]
+                    color: this.state.selectedDriverFocus?.isDriverSuspended
                       ? process.env.REACT_APP_ERROR_COLOR
                       : process.env.REACT_APP_PRIMARY_COLOR,
                   })
@@ -758,7 +520,7 @@ class Drivers extends Component {
               <div className={classes.profilePicBrief}>
                 <img
                   alt="car"
-                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["cars_data"][0]["taxi_picture"]}`}
+                  src={this.state.selectedDriverFocus?.documents?.vehicle_photo}
                   className={classes.trueBriefImage}
                   style={{ objectFit: "contain" }}
                 />
@@ -767,52 +529,28 @@ class Drivers extends Component {
                 {/* Brand */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["cars_data"][0]["car_brand"],
+                    this.state.selectedDriverFocus?.vehicle_details?.brand_name,
                   label: "Brand",
                 })}
                 {/* Plate no */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["cars_data"][0][
-                      "plate_number"
-                    ],
+                    this.state.selectedDriverFocus?.vehicle_details
+                      ?.plate_number,
                   label: "Plate number",
                 })}
-                {/* Permit no */}
-                {isDeliveryDriver || isShoppingDriver
-                  ? null
-                  : this.renderInformationWithLabel({
-                      title:
-                        this.state.selectedDriverFocus["cars_data"][0][
-                          "permit_number"
-                        ],
-                      label: "Permit number",
-                    })}
-                {/* Taxi number */}
-                {isDeliveryDriver || isShoppingDriver
-                  ? null
-                  : this.renderInformationWithLabel({
-                      title:
-                        this.state.selectedDriverFocus["cars_data"][0][
-                          "taxi_number"
-                        ],
-                      label: "Taxi number",
-                    })}
               </div>
               {/* 1.5 */}
               <div className={classes.textualInfosBrief}>
                 {/* Model name */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["cars_data"][0][
-                      "model_name"
-                    ],
+                    this.state.selectedDriverFocus?.vehicle_details?.model_name,
                   label: "Model",
                 })}
                 {/* Color */}
                 {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedDriverFocus["cars_data"][0]["color"],
+                  title: this.state.selectedDriverFocus?.vehicle_details?.color,
                   label: "Color",
                 })}
               </div>
@@ -821,9 +559,7 @@ class Drivers extends Component {
                 {/* Vehicle type */}
                 {this.renderInformationWithLabel({
                   title: /economy/i.test(
-                    this.state.selectedDriverFocus["cars_data"][0][
-                      "vehicle_type"
-                    ]
+                    this.state.selectedDriverFocus?.cars_data?.[0]?.vehicle_type
                   )
                     ? "Economy"
                     : "Private",
@@ -831,13 +567,11 @@ class Drivers extends Component {
                 })}
                 {/* Status */}
                 {this.renderInformationWithLabel({
-                  title: this.state.selectedDriverFocus["isDriverSuspended"]
+                  title: this.state.selectedDriverFocus?.isDriverSuspended
                     ? "Suspended"
-                    : this.state.selectedDriverFocus["operational_state"][
-                        "status"
-                      ],
+                    : "Active",
                   label: "Status",
-                  color: this.state.selectedDriverFocus["isDriverSuspended"]
+                  color: this.state.selectedDriverFocus?.isDriverSuspended
                     ? process.env.REACT_APP_ERROR_COLOR
                     : process.env.REACT_APP_PRIMARY_COLOR,
                 })}
@@ -847,7 +581,7 @@ class Drivers extends Component {
                 {/* Regional clearance */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["regional_clearances"][0],
+                    this.state.selectedDriverFocus?.regional_clearances?.[0],
                   label: "Regional clearance",
                 })}
               </div>
@@ -859,7 +593,7 @@ class Drivers extends Component {
           <div className={classes.profileBrief} style={{ flexWrap: "wrap" }}>
             {this.renderDocumentsList({
               driver_type:
-                this.state.selectedDriverFocus["operation_clearances"],
+                this.state.selectedDriverFocus?.operation_clearances?.[0],
             })}
           </div>
 
@@ -867,12 +601,11 @@ class Drivers extends Component {
           {this.renderBasicTitle({ title: "Authority zone" })}
           <div
             className={classes.profileBrief}
-            style={{ display: "block", border: "none" }}
-          >
+            style={{ display: "block", border: "none" }}>
             <div
               className={classes.suspendAccButton}
               style={
-                this.state.selectedDriverFocus["isDriverSuspended"]
+                this.state.selectedDriverFocus?.isDriverSuspended
                   ? { color: process.env.REACT_APP_SECONDARY_COLOR }
                   : {}
               }
@@ -881,8 +614,7 @@ class Drivers extends Component {
 
                 if (
                   window.confirm(
-                    this.state.selectedDriverFocus["isDriverSuspended"] ===
-                      false
+                    this.state.selectedDriverFocus?.isDriverSuspended === false
                       ? "Are you sure you want to suspend this driver?"
                       : "Are you sure you want to unsuspend this driver?"
                   )
@@ -894,11 +626,11 @@ class Drivers extends Component {
                     admin_fp: that.props.App.loginData.admin_fp,
                     token_j: that.props.App.loginData.token_j,
                     operation:
-                      this.state.selectedDriverFocus["isDriverSuspended"] ===
+                      this.state.selectedDriverFocus?.isDriverSuspended ===
                       false
                         ? "suspended"
                         : "unsuspend",
-                    driver_id: this.state.selectedDriverFocus["_id"],
+                    driver_id: this.state.selectedDriverFocus?._id,
                   });
                   axios
                     .post(
@@ -936,14 +668,13 @@ class Drivers extends Component {
                       toast.error("Unable to perform the operation.");
                     });
                 }
-              }}
-            >
-              {this.state.selectedDriverFocus["isDriverSuspended"]
+              }}>
+              {this.state.selectedDriverFocus?.isDriverSuspended
                 ? "Unsuspend this account"
                 : "Suspend this account"}
             </div>
             <div className={classes.labelInfoPlusL}>
-              {this.state.selectedDriverFocus["isDriverSuspended"]
+              {this.state.selectedDriverFocus?.isDriverSuspended
                 ? "The driver will be able to see the requests immediately."
                 : "The driver will not be able to see requests immediately."}
             </div>
@@ -953,7 +684,7 @@ class Drivers extends Component {
     } //Awaiting approval driver
     else {
       let isDeliveryOrShoppingDriver =
-        this.state.selectedDriverFocus["nature_driver"] === "COURIER";
+        this.state.selectedDriverFocus?.nature_driver === "COURIER";
 
       //Registered driver
       return (
@@ -963,24 +694,24 @@ class Drivers extends Component {
             <div className={classes.profilePicBrief}>
               <img
                 alt="profile"
-                src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["driver_photo"]}`}
+                src={this.state.selectedDriverFocus?.documents?.driver_photo}
                 className={classes.trueBriefImage}
               />
             </div>
             <div className={classes.textualInfosBrief}>
               {/* Name */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["name"],
+                title: this.state.selectedDriverFocus?.name,
                 label: "Name",
               })}
               {/* Surname */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["surname"],
+                title: this.state.selectedDriverFocus?.surname,
                 label: "Surname",
               })}
               {/* Gender */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["gender"],
+                title: this.state.selectedDriverFocus?.gender,
                 label: "Gender",
               })}
               {/* Title */}
@@ -993,19 +724,19 @@ class Drivers extends Component {
             <div className={classes.textualInfosBrief}>
               {/* Email */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["email"],
+                title: this.state.selectedDriverFocus?.email,
                 label: "Email",
               })}
 
               {/* clearance */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["nature_driver"],
+                title: this.state.selectedDriverFocus?.nature_driver,
                 label: "User type",
               })}
               {/* Surname */}
               {this.renderInformationWithLabel({
                 title: this.getReadableDate(
-                  this.state.selectedDriverFocus["date_applied"]
+                  this.state.selectedDriverFocus?.createdAt
                 ),
                 label: "Application date",
               })}
@@ -1014,22 +745,20 @@ class Drivers extends Component {
             <div className={classes.textualInfosBrief}>
               {/* Personal ID */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["city"],
+                title: this.state.selectedDriverFocus?.city,
                 label: "City",
               })}
               {/* Phone */}
               {this.renderInformationWithLabel({
-                title: this.state.selectedDriverFocus["phone_number"],
+                title: this.state.selectedDriverFocus?.phone_number,
                 label: "Phone number",
               })}
               {/* Surname */}
               {this.renderInformationWithLabel({
-                title:
-                  this.state.selectedDriverFocus["accepted_conditions_details"][
-                    "did_accept_terms"
-                  ] === "true"
-                    ? "Yes"
-                    : "No did not",
+                title: this.state.selectedDriverFocus
+                  ?.accepted_conditions_details?.did_accept_terms
+                  ? "Yes"
+                  : "No did not",
                 label: "Did accept the terms",
               })}
             </div>
@@ -1041,7 +770,7 @@ class Drivers extends Component {
               <div className={classes.profilePicBrief}>
                 <img
                   alt="car"
-                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["vehicle_photo"]}`}
+                  src={this.state.selectedDriverFocus?.documents?.vehicle_photo}
                   className={classes.trueBriefImage}
                 />
               </div>
@@ -1049,17 +778,14 @@ class Drivers extends Component {
                 {/* Brand */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["vehicle_details"][
-                      "brand_name"
-                    ],
+                    this.state.selectedDriverFocus?.vehicle_details?.brand_name,
                   label: "Brand",
                 })}
                 {/* Plate no */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["vehicle_details"][
-                      "plate_number"
-                    ],
+                    this.state.selectedDriverFocus?.vehicle_details
+                      ?.plate_number,
                   label: "Plate number",
                 })}
                 {/* Permit no */}
@@ -1067,9 +793,8 @@ class Drivers extends Component {
                   ? null
                   : this.renderInformationWithLabel({
                       title:
-                        this.state.selectedDriverFocus["vehicle_details"][
-                          "permit_number"
-                        ],
+                        this.state.selectedDriverFocus?.vehicle_details
+                          ?.permit_number,
                       label: "Permit number",
                     })}
                 {/* Taxi number */}
@@ -1077,9 +802,8 @@ class Drivers extends Component {
                   ? null
                   : this.renderInformationWithLabel({
                       title:
-                        this.state.selectedDriverFocus["vehicle_details"][
-                          "taxi_number"
-                        ],
+                        this.state.selectedDriverFocus?.vehicle_details
+                          ?.taxi_number,
                       label: "Taxi number",
                     })}
               </div>
@@ -1088,15 +812,12 @@ class Drivers extends Component {
                 {/* Model name */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedDriverFocus["vehicle_details"][
-                      "model_name"
-                    ],
+                    this.state.selectedDriverFocus?.vehicle_details?.model_name,
                   label: "Model",
                 })}
                 {/* Color */}
                 {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedDriverFocus["vehicle_details"]["color"],
+                  title: this.state.selectedDriverFocus?.vehicle_details?.color,
                   label: "Color",
                 })}
               </div>
@@ -1115,8 +836,7 @@ class Drivers extends Component {
           {this.renderBasicTitle({ title: "Authority zone" })}
           <div
             className={classes.profileBrief}
-            style={{ display: "block", border: "none" }}
-          >
+            style={{ display: "block", border: "none" }}>
             <div
               className={classes.suspendAccButton}
               style={{
@@ -1138,7 +858,7 @@ class Drivers extends Component {
                     admin_fp: that.props.App.loginData.admin_fp,
                     token_j: that.props.App.loginData.token_j,
                     operation:
-                      this.state.selectedDriverFocus["isDriverSuspended"] ===
+                      this.state.selectedDriverFocus?.isDriverSuspended ===
                       false
                         ? "suspended"
                         : "unsuspend",
@@ -1161,12 +881,9 @@ class Drivers extends Component {
                         toast.error("Unable to approve this this.");
                       else {
                         toast.success("Successfully approved!");
-                        setTimeout(() => {
-                          //Go back
-                          that.setState({
-                            selectedDriverFocus: false,
-                          });
-                        }, 4000);
+                        that.setState({
+                          selectedDriverFocus: false,
+                        });
                       }
                     })
                     .catch(function (error) {
@@ -1175,8 +892,7 @@ class Drivers extends Component {
                       toast.error("Unable to approve this this.");
                     });
                 }
-              }}
-            >
+              }}>
               Approve account
             </div>
             <div className={classes.labelInfoPlusL}>
@@ -1191,40 +907,17 @@ class Drivers extends Component {
   //Render documents based on the driver type
   renderDocumentsList({ driver_type = "TYPE" }) {
     switch (driver_type) {
-      case "RIDE":
-        return (
-          <>
-            {this.renderDocumentNode({
-              title: "ID paper",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_id_paper"]}`,
-            })}
-            {this.renderDocumentNode({
-              title: "Driver license",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["driver_licence_doc"]}`,
-            })}
-            {this.renderDocumentNode({
-              title: "Public permit",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_public_permit"]}`,
-            })}
-            {this.renderDocumentNode({
-              title: "Blue paper",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_blue_paper"]}`,
-            })}
-            {this.renderDocumentNode({
-              title: "White paper",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_white_paper"]}`,
-            })}
-          </>
-        );
-
       case "DELIVERY":
         return (
           <>
             {this.renderDocumentNode({
               title: "ID paper",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_id_paper"]}`,
+              url: this.state.selectedDriverFocus?.documents?.id_photo,
             })}
-            {/* {this.renderDocumentNode({ title: "Driver license" })} */}
+            {this.renderDocumentNode({
+              title: "Driver license",
+              url: this.state.selectedDriverFocus?.documents?.license_photo,
+            })}
           </>
         );
 
@@ -1233,7 +926,8 @@ class Drivers extends Component {
           <>
             {this.renderDocumentNode({
               title: "ID paper",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_documents/${this.state.selectedDriverFocus["identification_data"]["copy_id_paper"]}`,
+              url: this.state.selectedDriverFocus?.identification_data
+                ?.copy_id_paper,
             })}
             {/* {this.renderDocumentNode({ title: "Driver license" })} */}
           </>
@@ -1244,34 +938,12 @@ class Drivers extends Component {
           <>
             {this.renderDocumentNode({
               title: "ID paper",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["id_photo"]}`,
+              url: this.state.selectedDriverFocus["documents"]["id_photo"],
             })}
             {this.renderDocumentNode({
               title: "Driver license",
-              url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["license_photo"]}`,
+              url: this.state.selectedDriverFocus["documents"]["license_photo"],
             })}
-            {this.state.selectedDriverFocus["documents"]["permit_photo"] ===
-            undefined
-              ? null
-              : this.renderDocumentNode({
-                  title: "Public permit",
-                  url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["permit_photo"]}`,
-                })}
-            {this.state.selectedDriverFocus["documents"]["blue_paper_photo"] ===
-            undefined
-              ? null
-              : this.renderDocumentNode({
-                  title: "Blue paper",
-                  url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["blue_paper_photo"]}`,
-                })}
-            {this.state.selectedDriverFocus["documents"][
-              "white_paper_photo"
-            ] === undefined
-              ? null
-              : this.renderDocumentNode({
-                  title: "White paper",
-                  url: `${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Drivers_Applications/${this.state.selectedDriverFocus["documents"]["white_paper_photo"]}`,
-                })}
           </>
         );
 
@@ -1309,8 +981,7 @@ class Drivers extends Component {
     return (
       <div
         className={classes.documentNode}
-        onClick={() => this.setState({ shouldShowFilePreview: true })}
-      >
+        onClick={() => this.setState({ shouldShowFilePreview: true })}>
         {this.state.shouldShowFilePreview === false ? null : (
           <ImageViewer
             src={[url]}

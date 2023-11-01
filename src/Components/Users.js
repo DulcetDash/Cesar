@@ -32,8 +32,8 @@ class Users extends Component {
     } //Invalid data
     else {
       //!Log out
-      this.props.UpdateSuccessfullLoginDetails(false);
-      window.location.href = "/";
+      // this.props.UpdateSuccessfullLoginDetails(false);
+      // window.location.href = "/";
     }
   }
 
@@ -53,8 +53,8 @@ class Users extends Component {
         //   console.log(response);
         if (response.data.response === "error_Logout") {
           //!Log out
-          that.props.UpdateSuccessfullLoginDetails(false);
-          window.location.href = "/";
+          // that.props.UpdateSuccessfullLoginDetails(false);
+          // window.location.href = "/";
         } else {
           that.setState({
             hasError: false,
@@ -95,8 +95,7 @@ class Users extends Component {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           <div className={classes.headerTitle}>Users</div>
           <div className={classes.otherSideHeader}>
             {" "}
@@ -218,8 +217,7 @@ class Users extends Component {
                                 color: process.env.REACT_APP_ERROR_COLOR,
                                 fontFamily: "MoveTextMedium",
                               }
-                        }
-                      >
+                        }>
                         {isAccountVerified ? "Verified" : "Not verified"}
                       </td>
                       <td>{this.getReadableDate(user["date_registered"])}</td>

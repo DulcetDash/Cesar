@@ -71,8 +71,8 @@ class Requests extends Component {
     } //Invalid data
     else {
       //!Log out
-      this.props.UpdateSuccessfullLoginDetails(false);
-      window.location.href = "/";
+      // this.props.UpdateSuccessfullLoginDetails(false);
+      // window.location.href = "/";
     }
   }
 
@@ -198,8 +198,8 @@ class Requests extends Component {
         //   console.log(response.data.response);
         if (response.data.response === "error_Logout") {
           //!Log out
-          that.props.UpdateSuccessfullLoginDetails(false);
-          window.location.href = "/";
+          // that.props.UpdateSuccessfullLoginDetails(false);
+          // window.location.href = "/";
         } else if (
           response.data.response === "error" ||
           Object.keys(response.data.response).length === 0
@@ -292,8 +292,7 @@ class Requests extends Component {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-            }}
-          >
+            }}>
             <div className={classes.headerTitle}>
               {this.getHumanReadableNames(this.state.selectedRequestCategory)}{" "}
               {this.getHumanReadableNames(this.state.selectedRequestStatus)}
@@ -307,8 +306,7 @@ class Requests extends Component {
                   ? selectedCategoryStyle
                   : {}
               }
-              onClick={() => this.updateSelectedRequestsCat("ride")}
-            >
+              onClick={() => this.updateSelectedRequestsCat("ride")}>
               Ride{" - "}
               {this.getNumberOfRequestsPerStyle("inprogress", "ride")}
             </div>
@@ -318,8 +316,7 @@ class Requests extends Component {
                   ? selectedCategoryStyle
                   : {}
               }
-              onClick={() => this.updateSelectedRequestsCat("delivery")}
-            >
+              onClick={() => this.updateSelectedRequestsCat("delivery")}>
               Delivery{" - "}
               {this.getNumberOfRequestsPerStyle("inprogress", "delivery")}
             </div>
@@ -329,8 +326,7 @@ class Requests extends Component {
                   ? selectedCategoryStyle
                   : {}
               }
-              onClick={() => this.updateSelectedRequestsCat("shopping")}
-            >
+              onClick={() => this.updateSelectedRequestsCat("shopping")}>
               Shopping{" - "}
               {this.getNumberOfRequestsPerStyle("inprogress", "shopping")}
             </div>
@@ -347,8 +343,7 @@ class Requests extends Component {
                   ? selectedStatusStyle
                   : {}
               }
-              onClick={() => this.updateSelectedReqStatusCat("inprogress")}
-            >
+              onClick={() => this.updateSelectedReqStatusCat("inprogress")}>
               In progress{" - "}
               {this.getNumberOfRequestsPerStyle("inprogress")}
             </div>
@@ -358,8 +353,7 @@ class Requests extends Component {
                   ? selectedStatusStyle
                   : {}
               }
-              onClick={() => this.updateSelectedReqStatusCat("completed")}
-            >
+              onClick={() => this.updateSelectedReqStatusCat("completed")}>
               Completed{" - "}
               {this.getNumberOfRequestsPerStyle("completed")}
             </div>
@@ -369,8 +363,7 @@ class Requests extends Component {
                   ? selectedStatusStyle
                   : {}
               }
-              onClick={() => this.updateSelectedReqStatusCat("cancelled")}
-            >
+              onClick={() => this.updateSelectedReqStatusCat("cancelled")}>
               Cancelled{" - "}
               {this.getNumberOfRequestsPerStyle("cancelled")}
             </div>
@@ -434,13 +427,11 @@ class Requests extends Component {
     return (
       <div
         className={classes.infoPlusLabelContainer}
-        style={{ marginLeft: marginLeft }}
-      >
+        style={{ marginLeft: marginLeft }}>
         <div className={classes.labelInfoPlusL}>{label}</div>
         <div
           className={classes.titleInfoPlusL}
-          style={{ color: color, fontSize: fontSize }}
-        >
+          style={{ color: color, fontSize: fontSize }}>
           {title}
         </div>
       </div>
@@ -555,8 +546,7 @@ class Requests extends Component {
                   selectedRequestForFocus: request,
                   shouldShowFocusModal: true,
                 });
-              }}
-            >
+              }}>
               <td style={{ fontFamily: "MoveTextMedium" }}>{index + 1}</td>
               <td
                 style={{
@@ -573,8 +563,7 @@ class Requests extends Component {
                         : process.env.REACT_APP_PRIMARY_COLOR
                       : "#fff",
                   fontFamily: "MoveTextMedium",
-                }}
-              >
+                }}>
                 {request.shopper_id === "false"
                   ? this.state.selectedRequestStatus === "cancelled"
                     ? "No driver"
@@ -593,8 +582,7 @@ class Requests extends Component {
                 style={{
                   fontFamily: "MoveTextBold",
                   color: process.env.REACT_APP_SECONDARY_COLOR,
-                }}
-              >
+                }}>
                 {ucFirst({ stringData: request.ride_mode })}
               </td>
               <td
@@ -602,8 +590,7 @@ class Requests extends Component {
                   fontFamily: "MoveTextBold",
                   color: process.env.REACT_APP_PRIMARY_COLOR,
                   fontSize: "18px",
-                }}
-              >
+                }}>
                 {request.totals_request.fare !== undefined
                   ? `N$${request.totals_request.fare}`
                   : request.totals_request.total}
@@ -613,8 +600,7 @@ class Requests extends Component {
                 style={{
                   backgroundColor: deductedStep.color.back,
                   color: deductedStep.color.color,
-                }}
-              >
+                }}>
                 {deductedStep.step}
               </td>
               <td>
@@ -703,8 +689,7 @@ class Requests extends Component {
                             : process.env.REACT_APP_PRIMARY_COLOR
                           : "#fff",
                       fontFamily: "MoveTextMedium",
-                    }}
-                  >
+                    }}>
                     {request.shopper_id === "false"
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
@@ -717,8 +702,7 @@ class Requests extends Component {
                     style={{
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_SECONDARY_COLOR,
-                    }}
-                  >
+                    }}>
                     {ucFirst({ stringData: request.ride_mode })}
                   </td>
                   <td
@@ -726,8 +710,7 @@ class Requests extends Component {
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       fontSize: "18px",
-                    }}
-                  >{`N$${request.totals_request.fare}`}</td>
+                    }}>{`N$${request.totals_request.fare}`}</td>
                   <td>
                     {this.getReadablePaymentMethod(request.payment_method)}
                   </td>
@@ -735,8 +718,7 @@ class Requests extends Component {
                     style={{
                       backgroundColor: deductedStep.color.back,
                       color: deductedStep.color.color,
-                    }}
-                  >
+                    }}>
                     {deductedStep.step}
                   </td>
                 </tr>
@@ -825,8 +807,7 @@ class Requests extends Component {
                             : process.env.REACT_APP_PRIMARY_COLOR
                           : "#fff",
                       fontFamily: "MoveTextMedium",
-                    }}
-                  >
+                    }}>
                     {request.shopper_id === "false"
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
@@ -839,8 +820,7 @@ class Requests extends Component {
                     style={{
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_SECONDARY_COLOR,
-                    }}
-                  >
+                    }}>
                     {ucFirst({ stringData: request.ride_mode })}
                   </td>
                   <td
@@ -848,8 +828,7 @@ class Requests extends Component {
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       fontSize: "18px",
-                    }}
-                  >{`${request.totals_request.total}`}</td>
+                    }}>{`${request.totals_request.total}`}</td>
                   <td>
                     {this.getReadablePaymentMethod(request.payment_method)}
                   </td>
@@ -857,8 +836,7 @@ class Requests extends Component {
                     style={{
                       backgroundColor: deductedStep.color.back,
                       color: deductedStep.color.color,
-                    }}
-                  >
+                    }}>
                     {deductedStep.step}
                   </td>
                 </tr>
@@ -947,8 +925,7 @@ class Requests extends Component {
                             : process.env.REACT_APP_PRIMARY_COLOR
                           : "#fff",
                       fontFamily: "MoveTextMedium",
-                    }}
-                  >
+                    }}>
                     {request.shopper_id === "false"
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
@@ -961,8 +938,7 @@ class Requests extends Component {
                     style={{
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_SECONDARY_COLOR,
-                    }}
-                  >
+                    }}>
                     {ucFirst({ stringData: request.ride_mode })}
                   </td>
                   <td
@@ -970,8 +946,7 @@ class Requests extends Component {
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       fontSize: "18px",
-                    }}
-                  >{`${request.totals_request.total}`}</td>
+                    }}>{`${request.totals_request.total}`}</td>
                   <td>
                     {this.getReadablePaymentMethod(request.payment_method)}
                   </td>
@@ -979,8 +954,7 @@ class Requests extends Component {
                     style={{
                       backgroundColor: deductedStep.color.back,
                       color: deductedStep.color.color,
-                    }}
-                  >
+                    }}>
                     {deductedStep.step}
                   </td>
                 </tr>
@@ -1035,8 +1009,7 @@ class Requests extends Component {
                 index + 1 === requestData.shopping_list.length
                   ? { borderBottomColor: "#fff" }
                   : {}
-              }
-            >
+              }>
               <div className={classes.itemPictureContainer}>
                 <img
                   alt={"item"}
@@ -1061,8 +1034,7 @@ class Requests extends Component {
                     style={{
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       paddingRight: "10px",
-                    }}
-                  >
+                    }}>
                     {item.price}
                   </span>{" "}
                   * {item.items} {item.items > 1 ? "items" : "item"}
@@ -1176,8 +1148,7 @@ class Requests extends Component {
               marginTop: "20px",
               flexWrap: "wrap",
               borderBottomColor: "#fff",
-            }}
-          >
+            }}>
             {requestData.shopper_id === "false"
               ? null
               : this.renderActionNode({
@@ -1314,8 +1285,7 @@ class Requests extends Component {
               marginTop: "20px",
               flexWrap: "wrap",
               borderBottomColor: "#fff",
-            }}
-          >
+            }}>
             {requestData.shopper_id === "false"
               ? null
               : this.renderActionNode({
@@ -1457,8 +1427,7 @@ class Requests extends Component {
               marginTop: "20px",
               flexWrap: "wrap",
               borderBottomColor: "#fff",
-            }}
-          >
+            }}>
             {requestData.shopper_id === "false"
               ? null
               : this.renderActionNode({
@@ -1609,8 +1578,7 @@ class Requests extends Component {
       <div
         className={classes.actionNode}
         style={{ color: color }}
-        onClick={actuator}
-      >
+        onClick={actuator}>
         <div>{title}</div>
         {isValidated ? (
           <CheckCircle style={{ fontSize: "15px" }} />
@@ -2014,20 +1982,17 @@ class Requests extends Component {
               <div>
                 <div
                   className={classes.titleInfoPlusLocation}
-                  style={{ color: color }}
-                >
+                  style={{ color: color }}>
                   {locationReformattedData.suburb}
                 </div>
                 {/* Recipient details if applicable */}
                 {isDelivery ? (
                   <div
                     className={classes.suburbInfoPlusLocation}
-                    style={{ color: color, marginBottom: "10px" }}
-                  >
+                    style={{ color: color, marginBottom: "10px" }}>
                     <div>{location.name}</div>
                     <div
-                      style={{ color: process.env.REACT_APP_SECONDARY_COLOR }}
-                    >
+                      style={{ color: process.env.REACT_APP_SECONDARY_COLOR }}>
                       {location.phone}
                     </div>
                   </div>
@@ -2035,8 +2000,7 @@ class Requests extends Component {
                 {/* ..... */}
                 <div
                   className={classes.suburbInfoPlusLocation}
-                  style={{ color: color }}
-                >
+                  style={{ color: color }}>
                   {locationReformattedData.street_name}
                   {locationReformattedData.street_name !== false &&
                   locationReformattedData.street_name.length > 0
@@ -2067,8 +2031,7 @@ class Requests extends Component {
           onAfterOpen={() => {}}
           onRequestClose={() => {}}
           style={customStyles}
-          contentLabel="Request modal"
-        >
+          contentLabel="Request modal">
           {this.renderAppropriateModalContent()}
         </Modal>
 

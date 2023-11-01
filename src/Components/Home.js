@@ -48,8 +48,8 @@ class Home extends Component {
     } //Invalid data
     else {
       //!Log out
-      this.props.UpdateSuccessfullLoginDetails(false);
-      window.location.href = "/";
+      // this.props.UpdateSuccessfullLoginDetails(false);
+      // window.location.href = "/";
     }
   }
 
@@ -65,8 +65,8 @@ class Home extends Component {
         // console.log(response.data);
         if (response.data.response === "error_Logout") {
           //!Log out
-          that.props.UpdateSuccessfullLoginDetails(false);
-          window.location.href = "/";
+          // that.props.UpdateSuccessfullLoginDetails(false);
+          // window.location.href = "/";
         } else if (response.data.response !== "error") {
           //SUCCESS
           that.setState({
@@ -127,8 +127,7 @@ class Home extends Component {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           <div className={classes.headerTitle}>Summary</div>
         </div>
         {/* Loader */}
@@ -215,8 +214,7 @@ class Home extends Component {
                   height: "500px",
                   marginLeft: 0,
                   marginRight: 0,
-                }}
-              >
+                }}>
                 <Loader
                   type="TailSpin"
                   color="#000"
@@ -234,8 +232,7 @@ class Home extends Component {
                   height: "500px",
                   marginLeft: 0,
                   marginRight: 0,
-                }}
-              >
+                }}>
                 No data found, please try refreshing.
               </div>
             ) : (
@@ -244,8 +241,7 @@ class Home extends Component {
                   xType="ordinal"
                   height={500}
                   margin={{ bottom: 100 }}
-                  stackBy="y"
-                >
+                  stackBy="y">
                   <VerticalGridLines />
                   <HorizontalGridLines />
                   <XAxis title="Days" tickLabelAngle={90} tickPadding={60} />
@@ -340,8 +336,7 @@ class Home extends Component {
                 height: "500px",
                 marginLeft: 0,
                 marginRight: 0,
-              }}
-            >
+              }}>
               No data found, please try refreshing.
             </div>
           ) : (
