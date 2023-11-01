@@ -511,6 +511,7 @@ class Drivers extends Component {
                 : null}
             </div>
           </div>
+
           {/* Car details */}
           {isShoppingDriver
             ? null
