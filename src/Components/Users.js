@@ -179,8 +179,7 @@ class Users extends Component {
                 {/* Body */}
 
                 {this.state.usersData.map((user, index) => {
-                  let isAccountVerified =
-                    user["account_verifications"]["is_accountVerified"];
+                  let isAccountVerified = user?.is_accountVerified;
 
                   return (
                     <tr key={index} className={classes.rowElementTable}>
@@ -189,23 +188,20 @@ class Users extends Component {
                       </td>
                       <td>
                         <div className={classes.userProfileContainer}>
-                          <img
-                            alt="profile"
-                            src={`${process.env.REACT_APP_AWS_S3_CLIENTS_PROFILES_PATH}/clients_profiles/${user["media"]["profile_picture"]}`}
-                          />
+                          <img alt="profile" src={user?.profile_picture} />
                         </div>
                       </td>
-                      <td>{user["name"]}</td>
-                      <td>{user["surname"]}</td>
+                      <td>{user?.name}</td>
+                      <td>{user?.surname}</td>
                       <td>
-                        {/^male/i.test(user["gender"])
+                        {/^male/i.test(user?.gender)
                           ? "Male"
-                          : /unk/i.test(user["gender"])
+                          : /unk/i.test(user?.gender)
                           ? "Unknown"
                           : "Female"}
                       </td>
-                      <td>{user["phone_number"]}</td>
-                      <td>{user["email"]}</td>
+                      <td>{user?.phone_number}</td>
+                      <td>{user?.email}</td>
                       <td
                         style={
                           isAccountVerified
@@ -220,7 +216,7 @@ class Users extends Component {
                         }>
                         {isAccountVerified ? "Verified" : "Not verified"}
                       </td>
-                      <td>{this.getReadableDate(user["date_registered"])}</td>
+                      <td>{this.getReadableDate(user?.createdAt)}</td>
                     </tr>
                   );
                 })}

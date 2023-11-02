@@ -288,7 +288,7 @@ class Drivers extends Component {
                       <div className={classes.userProfileContainer}>
                         <img
                           alt="profile"
-                          src={user?.identification_data?.profile_picture}
+                          src={user?.documents?.driver_photo}
                         />
                       </div>
                     </td>
@@ -314,7 +314,7 @@ class Drivers extends Component {
                       }>
                       {state}
                     </td>
-                    <td>Plate number</td>
+                    <td>{user?.vehicle_details?.plate_number}</td>
                     <td>Courier</td>
                     <td
                       style={
@@ -636,7 +636,7 @@ class Drivers extends Component {
                           ] === false
                             ? "suspend"
                             : "unsuspend",
-                        driver_id: this.state.selectedDriverFocus["_id"],
+                        driver_id: this.state.selectedDriverFocus?.id,
                       }
                     )
                     .then(function (response) {

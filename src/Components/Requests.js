@@ -49,7 +49,7 @@ class Requests extends Component {
     super(props);
 
     this.state = {
-      selectedRequestCategory: "ride", //ride, delivery or shopping
+      selectedRequestCategory: "shopping", //ride, delivery or shopping
       selectedRequestStatus: "inprogress", //inprogress, completed, cancelled
       shouldShowFocusModal: false, //If to render the request focus modal or not
       selectedRequestForFocus: {}, //The selected request for focus, in the modal
@@ -303,10 +303,11 @@ class Requests extends Component {
             <div
               style={
                 this.state.selectedRequestCategory === "ride"
-                  ? selectedCategoryStyle
-                  : {}
+                  ? { opacity: 0, cursor: "default", ...selectedCategoryStyle }
+                  : { opacity: 0, cursor: "default" }
               }
-              onClick={() => this.updateSelectedRequestsCat("ride")}>
+              // onClick={() => this.updateSelectedRequestsCat("ride")}
+            >
               Ride{" - "}
               {this.getNumberOfRequestsPerStyle("inprogress", "ride")}
             </div>
@@ -577,7 +578,7 @@ class Requests extends Component {
                   ? request.clientData.name
                   : "Unknown"}
               </td>
-              <td>{this.getReadableDate(request.date_requested)}</td>
+              <td>{this.getReadableDate(request.createdAt)}</td>
               <td
                 style={{
                   fontFamily: "MoveTextBold",
@@ -631,124 +632,6 @@ class Requests extends Component {
     });
 
     switch (this.state.selectedRequestForFocus.ride_mode) {
-      case "RIDE":
-        return (
-          <div className={classes.modalContainer}>
-            <div className={classes.headerPortionModal}>
-              <div className={classes.headerModalRequest}>
-                <div className={classes.titleRequestModal}>
-                  {ucFirst({
-                    stringData: this.getHumanReadableNames(
-                      this.state.selectedRequestStatus
-                    ),
-                  })}{" "}
-                  {this.state.selectedRequestCategory} request #
-                  {this.state.selectedRequestForFocus.index + 1}
-                </div>
-                <div className={classes.clientNameModal}>
-                  {" "}
-                  <Close
-                    style={{
-                      fontSize: "30px",
-                      color: "#000",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      this.setState({
-                        selectedRequestForFocus: {},
-                        shouldShowFocusModal: false,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-              <table className={classes.tableMain}>
-                <tr className={classes.headerTable}>
-                  <td>Driver</td>
-                  <td>Client name</td>
-                  <td>Date requested</td>
-                  <td>Request type</td>
-                  <td>Amount</td>
-                  <td>Payment method</td>
-                  <td>Progress step</td>
-                </tr>
-                {/* ... */}
-                <tr className={classes.rowElementTable}>
-                  <td
-                    style={{
-                      backgroundColor:
-                        this.state.selectedRequestStatus === "cancelled"
-                          ? "#fff"
-                          : request.shopper_id === "false"
-                          ? process.env.REACT_APP_ERROR_COLOR
-                          : process.env.REACT_APP_PRIMARY_COLOR,
-                      color:
-                        this.state.selectedRequestStatus === "cancelled"
-                          ? request.shopper_id === "false"
-                            ? process.env.REACT_APP_ERROR_COLOR
-                            : process.env.REACT_APP_PRIMARY_COLOR
-                          : "#fff",
-                      fontFamily: "MoveTextMedium",
-                    }}>
-                    {request.shopper_id === "false"
-                      ? this.state.selectedRequestStatus === "cancelled"
-                        ? "No driver"
-                        : "Pending..."
-                      : request.driverData.cars_data[0].taxi_number}
-                  </td>
-                  <td>{request.clientData.name}</td>
-                  <td>{this.getReadableDate(request.date_requested)}</td>
-                  <td
-                    style={{
-                      fontFamily: "MoveTextBold",
-                      color: process.env.REACT_APP_SECONDARY_COLOR,
-                    }}>
-                    {ucFirst({ stringData: request.ride_mode })}
-                  </td>
-                  <td
-                    style={{
-                      fontFamily: "MoveTextBold",
-                      color: process.env.REACT_APP_PRIMARY_COLOR,
-                      fontSize: "18px",
-                    }}>{`N$${request.totals_request.fare}`}</td>
-                  <td>
-                    {this.getReadablePaymentMethod(request.payment_method)}
-                  </td>
-                  <td
-                    style={{
-                      backgroundColor: deductedStep.color.back,
-                      color: deductedStep.color.color,
-                    }}>
-                    {deductedStep.step}
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            {this.renderBasicTitle({ title: "Itinary" })}
-            {this.renderItinary()}
-
-            {/* {this.renderBasicTitle({ title: "Fare details" })}
-            {this.renderFareDetails({
-              requestData: this.state.selectedRequestForFocus,
-            })} */}
-
-            {this.renderBasicTitle({ title: "Driver details" })}
-            {this.renderDriverDetails({
-              requestData: this.state.selectedRequestForFocus,
-            })}
-
-            {this.state.selectedRequestStatus !== "inprogress"
-              ? null
-              : this.renderBasicTitle({ title: "Actions" })}
-            {this.state.selectedRequestStatus !== "inprogress"
-              ? null
-              : this.renderGlobalActionNodes({
-                  requestData: this.state.selectedRequestForFocus,
-                })}
-          </div>
-        );
-
       case "DELIVERY":
         return (
           <div className={classes.modalContainer}>
@@ -808,14 +691,14 @@ class Requests extends Component {
                           : "#fff",
                       fontFamily: "MoveTextMedium",
                     }}>
-                    {request.shopper_id === "false"
+                    {request?.driverData?.name === "false"
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
                         : "Pending..."
                       : request.driverData.name}
                   </td>
                   <td>{request.clientData.name}</td>
-                  <td>{this.getReadableDate(request.date_requested)}</td>
+                  <td>{this.getReadableDate(request.createdAt)}</td>
                   <td
                     style={{
                       fontFamily: "MoveTextBold",
@@ -926,14 +809,14 @@ class Requests extends Component {
                           : "#fff",
                       fontFamily: "MoveTextMedium",
                     }}>
-                    {request.shopper_id === "false"
+                    {request?.driverData?.name
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
                         : "Pending..."
                       : request.driverData.name}
                   </td>
                   <td>{request.clientData.name}</td>
-                  <td>{this.getReadableDate(request.date_requested)}</td>
+                  <td>{this.getReadableDate(request.createdAt)}</td>
                   <td
                     style={{
                       fontFamily: "MoveTextBold",
@@ -975,7 +858,9 @@ class Requests extends Component {
             })}
 
             {this.renderBasicTitle({
-              title: `Items (${this.state.selectedRequestForFocus.shopping_list.length})`,
+              title: `Items (${
+                this.state.selectedRequestForFocus?.shopping_list?.length ?? 0
+              })`,
             })}
             {this.renderItemsShoppingList({
               requestData: this.state.selectedRequestForFocus,
@@ -1140,143 +1025,6 @@ class Requests extends Component {
     let requestState = requestData.request_state_vars;
 
     switch (requestData.ride_mode) {
-      case "RIDE":
-        return (
-          <div
-            className={classes.itiContainer}
-            style={{
-              marginTop: "20px",
-              flexWrap: "wrap",
-              borderBottomColor: "#fff",
-            }}>
-            {requestData.shopper_id === "false"
-              ? null
-              : this.renderActionNode({
-                  title: "Confirm pickup",
-                  isValidated: requestState.inRouteToDropoff,
-                  actuator: requestState.inRouteToDropoff
-                    ? () => {}
-                    : () => {
-                        toast.dismiss();
-
-                        if (
-                          window.confirm(
-                            "Do you really want to confirm the pickup?"
-                          )
-                        ) {
-                          toast.loading("Confirming the pickup");
-
-                          let that = this;
-                          axios
-                            .post(
-                              `${process.env.REACT_APP_BRIDGE}/confirm_pickup_request_driver_io`,
-                              {
-                                request_fp: requestData.request_fp,
-                                driver_fingerprint: requestData.shopper_id,
-                                requestType: requestData.ride_mode,
-                              }
-                            )
-                            .then(function (response) {
-                              console.log(response.data);
-                              toast.dismiss();
-
-                              if (
-                                /Successfully/i.test(response.data.response)
-                              ) {
-                                toast.success("Successfully confirmed pickup!");
-                                setTimeout(() => {
-                                  //Go back
-                                  that.setState({
-                                    selectedDriverFocus: false,
-                                  });
-                                }, 4000);
-                              } else toast.error("Unable to confirm the pickup.");
-                            })
-                            .catch(function (error) {
-                              console.log(error);
-                              toast.dismiss();
-                              toast.error("Unable to confirm the pickup.");
-                            });
-                        }
-                      },
-                })}
-            {requestData.shopper_id === "false"
-              ? null
-              : this.renderActionNode({
-                  title: "Confirm drop off",
-                  isValidated: requestState.completedDropoff,
-                  actuator: requestState.completedDropoff
-                    ? () => {}
-                    : () => {
-                        toast.dismiss();
-
-                        if (
-                          window.confirm(
-                            "Do you really want to confirm the drop off?"
-                          )
-                        ) {
-                          toast.loading("Confirming the drop off");
-
-                          let that = this;
-                          axios
-                            .post(
-                              `${process.env.REACT_APP_BRIDGE}/confirm_dropoff_request_driver_io`,
-                              {
-                                request_fp: requestData.request_fp,
-                                driver_fingerprint: requestData.shopper_id,
-                                requestType: requestData.ride_mode,
-                                selectedPackageIndex: 0,
-                              }
-                            )
-                            .then(function (response) {
-                              console.log(response.data);
-                              toast.dismiss();
-
-                              if (
-                                /Successfully/i.test(response.data.response)
-                              ) {
-                                toast.success(
-                                  "Successfully confirmed drop off!"
-                                );
-                                setTimeout(() => {
-                                  //Go back
-                                  that.setState({
-                                    selectedDriverFocus: false,
-                                  });
-                                }, 4000);
-                              } else toast.error("Unable to confirm the drop off.");
-                            })
-                            .catch(function (error) {
-                              console.log(error);
-                              toast.dismiss();
-                              toast.error("Unable to confirm the drop off.");
-                            });
-                        }
-                      },
-                })}
-            {requestData.shopper_id === "false"
-              ? null
-              : requestState.inRouteToDropoff
-              ? null
-              : this.renderActionNode({
-                  title: "Cancel for driver",
-                  isValidated: false,
-                  color: process.env.REACT_APP_ERROR_COLOR,
-                  actuator: () =>
-                    this.cancelRequestForDriver({ requestData: requestData }),
-                })}
-            {this.state.selectedRequestStatus !== "inprogress"
-              ? null
-              : this.renderActionNode({
-                  title: "Delete request",
-                  isValidated: false,
-                  color: process.env.REACT_APP_ERROR_COLOR,
-                  actuator: () =>
-                    this.deleteRequest({ requestData: requestData }),
-                })}
-          </div>
-        );
-
       case "DELIVERY":
         return (
           <div
