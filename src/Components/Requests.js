@@ -691,13 +691,13 @@ class Requests extends Component {
                           : "#fff",
                       fontFamily: "MoveTextMedium",
                     }}>
-                    {request?.driverData?.name === "false"
+                    {!request?.driverData?.name
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
                         : "Pending..."
-                      : request.driverData.name}
+                      : request?.driverData?.name}
                   </td>
-                  <td>{request.clientData.name}</td>
+                  <td>{request?.clientData?.name ?? "No driver"}</td>
                   <td>{this.getReadableDate(request.createdAt)}</td>
                   <td
                     style={{
@@ -809,13 +809,13 @@ class Requests extends Component {
                           : "#fff",
                       fontFamily: "MoveTextMedium",
                     }}>
-                    {request?.driverData?.name
+                    {!request?.driverData?.name
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
                         : "Pending..."
-                      : request.driverData.name}
+                      : request?.driverData?.name}
                   </td>
-                  <td>{request.clientData.name}</td>
+                  <td>{request?.clientData?.name ?? "Pending"}</td>
                   <td>{this.getReadableDate(request.createdAt)}</td>
                   <td
                     style={{
@@ -956,7 +956,7 @@ class Requests extends Component {
       let that = this;
       axios
         .post(`${process.env.REACT_APP_BRIDGE}/cancel_request_driver_io`, {
-          request_fp: requestData.request_fp,
+          request_fp: requestData.id,
           driver_fingerprint: requestData.shopper_id,
           requestType: requestData.ride_mode,
         })
@@ -966,12 +966,9 @@ class Requests extends Component {
 
           if (/Successfully/i.test(response.data.response)) {
             toast.success("Successfully cancelled the request for the driver!");
-            setTimeout(() => {
-              //Go back
-              that.setState({
-                selectedDriverFocus: false,
-              });
-            }, 4000);
+            that.setState({
+              selectedDriverFocus: false,
+            });
           } else toast.error("Unable to cancel the request for the driver.");
         })
         .catch(function (error) {
@@ -1158,11 +1155,11 @@ class Requests extends Component {
             {this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
-                  title: "Delete request",
+                  title: "Cancel request",
                   isValidated: false,
                   color: process.env.REACT_APP_ERROR_COLOR,
                   actuator: () =>
-                    this.deleteRequest({ requestData: requestData }),
+                    this.cancelRequestForDriver({ requestData: requestData }),
                 })}
           </div>
         );
@@ -1300,11 +1297,11 @@ class Requests extends Component {
             {this.state.selectedRequestStatus !== "inprogress"
               ? null
               : this.renderActionNode({
-                  title: "Delete request",
+                  title: "Cancel request",
                   isValidated: false,
                   color: process.env.REACT_APP_ERROR_COLOR,
                   actuator: () =>
-                    this.deleteRequest({ requestData: requestData }),
+                    this.cancelRequestForDriver({ requestData: requestData }),
                 })}
           </div>
         );

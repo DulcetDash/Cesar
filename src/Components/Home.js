@@ -105,7 +105,7 @@ class Home extends Component {
       });
 
       that.getGeneralSummary();
-    }, process.env.REACT_APP_BASIC_INTERVAL + 105);
+    }, 7 * 60 * 1000);
   }
 
   componentWillUnmount() {
@@ -132,7 +132,7 @@ class Home extends Component {
         </div>
         {/* Loader */}
         <div className={classes.rightCategoriesDrivers}>
-          <div style={{ fontSize: "13px" }}>Updates every 2min</div>
+          <div style={{ fontSize: "13px" }}>Updates every 7min</div>
         </div>
       </div>
     );
@@ -353,11 +353,6 @@ class Home extends Component {
                     })}
 
                     {this.renderInformationWithLabel({
-                      label: "Total rides",
-                      title: this.state.summaryMetaData.today.total_rides,
-                    })}
-
-                    {this.renderInformationWithLabel({
                       label: "Total deliveries",
                       title: this.state.summaryMetaData.today.total_deliveries,
                     })}
@@ -374,12 +369,6 @@ class Home extends Component {
                       title:
                         this.state.summaryMetaData.today
                           .total_cancelled_requests,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total cancelled rides",
-                      title:
-                        this.state.summaryMetaData.today.total_cancelled_rides,
                     })}
 
                     {this.renderInformationWithLabel({
@@ -411,7 +400,7 @@ class Home extends Component {
                     })}
 
                     {this.renderInformationWithLabel({
-                      label: "Total gross loss",
+                      label: "Total loss",
                       title: "N$" + this.state.summaryMetaData.today.total_loss,
                     })}
 
@@ -459,12 +448,6 @@ class Home extends Component {
                     })}
 
                     {this.renderInformationWithLabel({
-                      label: "Total rides",
-                      title:
-                        this.state.summaryMetaData.general_requests.total_rides,
-                    })}
-
-                    {this.renderInformationWithLabel({
                       label: "Total deliveries",
                       title:
                         this.state.summaryMetaData.general_requests
@@ -485,13 +468,6 @@ class Home extends Component {
                       title:
                         this.state.summaryMetaData.general_requests
                           .total_cancelled_requests,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total cancelled rides",
-                      title:
-                        this.state.summaryMetaData.general_requests
-                          .total_cancelled_rides,
                     })}
 
                     {this.renderInformationWithLabel({
@@ -565,21 +541,6 @@ class Home extends Component {
                     })}
 
                     {this.renderInformationWithLabel({
-                      label: "Total rides sales",
-                      title:
-                        "N$" +
-                        this.state.summaryMetaData.general_finances
-                          .total_rides_sales,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total rides revenues",
-                      title:
-                        this.state.summaryMetaData.general_finances
-                          .total_rides_revenues,
-                    })}
-
-                    {this.renderInformationWithLabel({
                       label: "Total deliveries sales",
                       title:
                         "N$" +
@@ -614,27 +575,11 @@ class Home extends Component {
                     })}
 
                     {this.renderInformationWithLabel({
-                      label: "Total gross loss",
+                      label: "Total loss",
                       title:
                         "N$" +
                         this.state.summaryMetaData.general_finances.total_loss,
                       color: process.env.REACT_APP_ERROR_COLOR,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total net loss",
-                      title:
-                        "N$" +
-                        this.state.summaryMetaData.general_finances
-                          .total_net_loss,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total loss for rides",
-                      title:
-                        "N$" +
-                        this.state.summaryMetaData.general_finances
-                          .total_rides_loss,
                     })}
 
                     {this.renderInformationWithLabel({
@@ -746,12 +691,6 @@ class Home extends Component {
                     })}
 
                     {this.renderInformationWithLabel({
-                      label: "Total ride drivers",
-                      title:
-                        this.state.summaryMetaData.drivers.total_ride_drivers,
-                    })}
-
-                    {this.renderInformationWithLabel({
                       label: "Total delivery drivers",
                       title:
                         this.state.summaryMetaData.drivers
@@ -782,20 +721,6 @@ class Home extends Component {
                       title:
                         this.state.summaryMetaData.drivers
                           .total_unknown_gender_drivers,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total male ride drivers",
-                      title:
-                        this.state.summaryMetaData.drivers
-                          .total_male_ride_drivers,
-                    })}
-
-                    {this.renderInformationWithLabel({
-                      label: "Total female ride drivers",
-                      title:
-                        this.state.summaryMetaData.drivers
-                          .total_female_ride_drivers,
                     })}
 
                     {this.renderInformationWithLabel({
