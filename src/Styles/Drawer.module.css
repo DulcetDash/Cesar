@@ -54,7 +54,7 @@
 
 .logoHeader {
   /* border: 1px solid black; */
-  width: 120px;
+  width: 150px;
   height: 70px;
   margin-left: 15px;
   margin-bottom: 3vmin;
@@ -71,7 +71,7 @@
   border-bottom: 1px solid #f0f0f0;
   padding-left: 25px;
   padding-right: 15px;
-  font-family: 'MoveTextMedium', sans-serif;
+  font-family: "MoveTextMedium", sans-serif;
   height: 55px;
   display: flex;
   flex-direction: row;
@@ -81,14 +81,14 @@
 }
 
 .menuElement:hover {
-  color: #11A05A;
+  color: #11a05a;
 }
 
 .menuElementStatic {
   border-bottom: 1px solid #f0f0f0;
   padding-left: 25px;
   padding-right: 15px;
-  font-family: 'MoveTextMedium', sans-serif;
+  font-family: "MoveTextMedium", sans-serif;
   height: 55px;
   display: flex;
   flex-direction: row;
@@ -101,7 +101,7 @@
   border-bottom: 1px solid #f0f0f0;
   padding-left: 25px;
   padding-right: 15px;
-  font-family: 'MoveTextMedium', sans-serif;
+  font-family: "MoveTextMedium", sans-serif;
   height: 55px;
   display: flex;
   flex-direction: row;
@@ -116,7 +116,7 @@
 
 .sepa {
   /* border: 1px solid red; */
-  flex: 1
+  flex: 1;
 }
 
 .copyright {

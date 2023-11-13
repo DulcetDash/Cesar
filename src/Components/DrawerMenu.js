@@ -61,7 +61,7 @@ class DrawerMenu extends Component {
     //....
     return (
       <div className={classes.container}>
-        <div className={classes.logoHeader} style={{ opacity: 0 }}>
+        <div className={classes.logoHeader}>
           <img alt="logo" src={logoWhite} className={classes.trueLogoHeader} />
         </div>
 
@@ -141,7 +141,7 @@ class DrawerMenu extends Component {
         })}
         {/* Copyright */}
         <div className={classes.copyright}>
-          <div>© 2023 XXXXX.</div>
+          <div>© 2023 DulcetDash.</div>
         </div>
       </div>
     );
