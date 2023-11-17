@@ -50,7 +50,6 @@ class Drivers extends Component {
   //Data getter
   dataGetter() {
     let that = this;
-    console.log(that.props.App);
     axios
       .post(`${process.env.REACT_APP_BRIDGE}/getDriversList`, {
         admin_fp: that.props.App.loginData.admin_fp,
@@ -66,9 +65,10 @@ class Drivers extends Component {
         //...
         else {
           if (that.state.selectedDriverFocus !== false) {
+            console.log(response.data.response.registered);
             //Has selected a driver
             response.data.response.registered.map((el) => {
-              if (el._id === that.state.selectedDriverFocus._id) {
+              if (el.id === that.state.selectedDriverFocus.id) {
                 // console.log("Updated the selected driver");
                 that.setState({
                   selectedDriverFocus: el,
@@ -846,16 +846,7 @@ class Drivers extends Component {
                   toast.loading("Approving the driver.");
 
                   let that = this;
-                  console.log({
-                    admin_fp: that.props.App.loginData.admin_fp,
-                    token_j: that.props.App.loginData.token_j,
-                    operation:
-                      this.state.selectedDriverFocus?.isDriverSuspended ===
-                      false
-                        ? "suspended"
-                        : "unsuspend",
-                    driver_id: this.state.selectedDriverFocus["_id"],
-                  });
+
                   axios
                     .post(
                       `${process.env.REACT_APP_BRIDGE}/approveDriverAccount`,

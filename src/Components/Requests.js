@@ -13,6 +13,7 @@ import {
   ArrowForward,
   CheckCircle,
   Close,
+  CloseRounded,
 } from "@material-ui/icons";
 import ucFirst from "../Helpers/Helpers";
 import Modal from "react-modal";
@@ -49,7 +50,7 @@ class Requests extends Component {
     super(props);
 
     this.state = {
-      selectedRequestCategory: "shopping", //ride, delivery or shopping
+      selectedRequestCategory: "delivery", //ride, delivery or shopping
       selectedRequestStatus: "inprogress", //inprogress, completed, cancelled
       shouldShowFocusModal: false, //If to render the request focus modal or not
       selectedRequestForFocus: {}, //The selected request for focus, in the modal
@@ -91,9 +92,9 @@ class Requests extends Component {
           this.state.selectedRequestStatus
         ];
       isolatedFocusedRequestsBulk.map((request) => {
-        if (request._id === that.state.selectedRequestForFocus._id) {
+        if (request.id === that.state.selectedRequestForFocus.id) {
           //!Found it
-          // console.log(`FOUND THE SELECTED REQUEST -> ${request._id}`);
+          // console.log(`FOUND THE SELECTED REQUEST -> ${request.id}`);
           request["index"] = that.state.selectedRequestForFocus.index;
           //..
           that.setState({
@@ -124,24 +125,6 @@ class Requests extends Component {
       return { step: "Waiting...", color: { back: "#fff", color: "#000" } };
 
     switch (requestData.ride_mode) {
-      case "RIDE":
-        if (stateVars.inRouteToPickup && stateVars.inRouteToDropoff === false) {
-          //In route to pickup
-          return { step: "Driving to pickup the client", color: colorsStep[0] };
-        } else if (
-          stateVars.inRouteToDropoff &&
-          stateVars.completedDropoff === false
-        ) {
-          //In route to drop off
-          return {
-            step: "Driving to drop off the client",
-            color: colorsStep[1],
-          };
-        } //Completed
-        else {
-          return { step: "Dropped off the client", color: colorsStep[2] };
-        }
-
       case "DELIVERY":
         if (
           stateVars.inRouteToPickupCash &&
@@ -571,11 +554,11 @@ class Requests extends Component {
                     : "Pending..."
                   : this.state.selectedRequestCategory === "ride"
                   ? request.driverData.cars_data[0].taxi_number
-                  : request.driverData.name}
+                  : request?.shopperData?.name}
               </td>
               <td>
                 {request.clientData !== undefined
-                  ? request.clientData.name
+                  ? request?.clientData?.name
                   : "Unknown"}
               </td>
               <td>{this.getReadableDate(request.createdAt)}</td>
@@ -594,7 +577,7 @@ class Requests extends Component {
                 }}>
                 {request.totals_request.fare !== undefined
                   ? `N$${request.totals_request.fare}`
-                  : request.totals_request.total}
+                  : `N$${request.totals_request.total}`}
               </td>
               <td>{this.getReadablePaymentMethod(request.payment_method)}</td>
               <td
@@ -691,13 +674,13 @@ class Requests extends Component {
                           : "#fff",
                       fontFamily: "MoveTextMedium",
                     }}>
-                    {!request?.driverData?.name
+                    {!request?.shopperData?.name
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
                         : "Pending..."
-                      : request?.driverData?.name}
+                      : request?.shopperData?.name}
                   </td>
-                  <td>{request?.clientData?.name ?? "No driver"}</td>
+                  <td>{request?.clientData?.name}</td>
                   <td>{this.getReadableDate(request.createdAt)}</td>
                   <td
                     style={{
@@ -711,7 +694,7 @@ class Requests extends Component {
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       fontSize: "18px",
-                    }}>{`${request.totals_request.total}`}</td>
+                    }}>{`N$${request.totals_request.total}`}</td>
                   <td>
                     {this.getReadablePaymentMethod(request.payment_method)}
                   </td>
@@ -809,11 +792,11 @@ class Requests extends Component {
                           : "#fff",
                       fontFamily: "MoveTextMedium",
                     }}>
-                    {!request?.driverData?.name
+                    {!request?.shopperData?.name
                       ? this.state.selectedRequestStatus === "cancelled"
                         ? "No driver"
                         : "Pending..."
-                      : request?.driverData?.name}
+                      : request?.shopperData?.name}
                   </td>
                   <td>{request?.clientData?.name ?? "Pending"}</td>
                   <td>{this.getReadableDate(request.createdAt)}</td>
@@ -829,7 +812,7 @@ class Requests extends Component {
                       fontFamily: "MoveTextBold",
                       color: process.env.REACT_APP_PRIMARY_COLOR,
                       fontSize: "18px",
-                    }}>{`${request.totals_request.total}`}</td>
+                    }}>{`N$${request.totals_request.total}`}</td>
                   <td>
                     {this.getReadablePaymentMethod(request.payment_method)}
                   </td>
@@ -908,11 +891,11 @@ class Requests extends Component {
               </div>
               {/* Infos */}
               <div className={classes.itemInfosContainer}>
-                <div className={classes.itemToShopName}>{item.name}</div>
+                <div className={classes.itemToShopName}>{item?.name}</div>
                 <div className={classes.itemStoreName}>
                   {item.meta.store !== undefined
-                    ? item.meta.store
-                    : item.meta.shop_name}
+                    ? item.meta?.store
+                    : item.meta?.shop_name}
                 </div>
                 <div className={classes.itemPriceQty}>
                   <span
@@ -927,10 +910,17 @@ class Requests extends Component {
               </div>
               {/* Status */}
               <div className={classes.itemBoughtState}>
-                {item.isShoped !== undefined && item.isShoped ? (
+                {item.isCompleted ? (
                   <CheckCircle style={{ fontSize: "35px" }} />
                 ) : this.state.selectedRequestStatus === "cancelled" ? (
                   ""
+                ) : item.isNotFound ? (
+                  <CloseRounded
+                    style={{
+                      fontSize: "35px",
+                      color: process.env.REACT_APP_ERROR_COLOR,
+                    }}
+                  />
                 ) : (
                   "Not yet purchased"
                 )}
@@ -1141,7 +1131,7 @@ class Requests extends Component {
                         }
                       },
                 })}
-            {requestData.shopper_id === "false"
+            {/* {requestData.shopper_id === "false"
               ? null
               : this.state.selectedRequestStatus !== "inprogress"
               ? null
@@ -1160,7 +1150,7 @@ class Requests extends Component {
                   color: process.env.REACT_APP_ERROR_COLOR,
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
-                })}
+                })} */}
           </div>
         );
 
@@ -1283,7 +1273,7 @@ class Requests extends Component {
                         }
                       },
                 })}
-            {requestData.shopper_id === "false"
+            {/* {requestData.shopper_id === "false"
               ? null
               : this.state.selectedRequestStatus !== "inprogress"
               ? null
@@ -1302,7 +1292,7 @@ class Requests extends Component {
                   color: process.env.REACT_APP_ERROR_COLOR,
                   actuator: () =>
                     this.cancelRequestForDriver({ requestData: requestData }),
-                })}
+                })} */}
           </div>
         );
       default:
@@ -1365,64 +1355,6 @@ class Requests extends Component {
       );
 
     switch (requestData.ride_mode) {
-      case "RIDE":
-        return (
-          <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
-            <div className={classes.profileBrief}>
-              <div className={classes.profilePicBrief}>
-                <img
-                  alt="profile"
-                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${requestData.driverData["identification_data"]["profile_picture"]}`}
-                  className={classes.trueBriefImage}
-                />
-              </div>
-              <div className={classes.textualInfosBrief}>
-                {/* Name */}
-                {this.renderInformationWithLabel({
-                  title: this.state.selectedRequestForFocus.driverData["name"],
-                  label: "Name",
-                  fontSize: "16px",
-                })}
-                {/* Surname */}
-                {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedRequestForFocus.driverData["surname"],
-                  label: "Surname",
-                  fontSize: "16px",
-                })}
-              </div>
-              {/* ... */}
-              <div className={classes.textualInfosBrief}>
-                {/* Gender */}
-                {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedRequestForFocus.driverData["gender"],
-                  label: "Gender",
-                  fontSize: "16px",
-                })}
-                {/* Phone number */}
-                {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedRequestForFocus.driverData.cars_data[0]
-                      .taxi_number,
-                  label: "Taxi number",
-                  fontSize: "16px",
-                })}
-              </div>
-              {/* ... */}
-              <div className={classes.textualInfosBrief}>
-                {/* Surname */}
-                {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedRequestForFocus.driverData.phone_number,
-                  label: "Phone number",
-                  fontSize: "16px",
-                })}
-              </div>
-            </div>
-          </div>
-        );
-
       case "DELIVERY":
         return (
           <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
@@ -1430,21 +1362,21 @@ class Requests extends Component {
               <div className={classes.profilePicBrief}>
                 <img
                   alt="profile"
-                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${requestData.driverData["identification_data"]["profile_picture"]}`}
+                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${requestData.driverData?.identification_data?.profile_picture}`}
                   className={classes.trueBriefImage}
                 />
               </div>
               <div className={classes.textualInfosBrief}>
                 {/* Name */}
                 {this.renderInformationWithLabel({
-                  title: this.state.selectedRequestForFocus.driverData["name"],
+                  title: this.state.selectedRequestForFocus?.shopperData?.name,
                   label: "Name",
                   fontSize: "16px",
                 })}
                 {/* Surname */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedRequestForFocus.driverData["surname"],
+                    this.state.selectedRequestForFocus?.shopperData?.surname,
                   label: "Surname",
                   fontSize: "16px",
                 })}
@@ -1454,15 +1386,13 @@ class Requests extends Component {
                 {/* Gender */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedRequestForFocus.driverData["gender"],
+                    this.state.selectedRequestForFocus?.shopperData?.gender,
                   label: "Gender",
                   fontSize: "16px",
                 })}
                 {/* Plate number */}
                 {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedRequestForFocus.driverData.cars_data[0]
-                      .plate_number,
+                  title: "-",
                   label: "Plate number",
                   fontSize: "16px",
                 })}
@@ -1472,7 +1402,8 @@ class Requests extends Component {
                 {/* Phone */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedRequestForFocus.driverData.phone_number,
+                    this.state.selectedRequestForFocus?.shopperData
+                      ?.phone_number,
                   label: "Phone number",
                   fontSize: "16px",
                 })}
@@ -1488,21 +1419,21 @@ class Requests extends Component {
               <div className={classes.profilePicBrief}>
                 <img
                   alt="profile"
-                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${requestData.driverData["identification_data"]["profile_picture"]}`}
+                  src={`${process.env.REACT_APP_AWS_S3_DRIVERS_PROFILE_PICTURES_PATH}/Profiles_pictures/${requestData.shopperData?.identification_data?.profile_picture}`}
                   className={classes.trueBriefImage}
                 />
               </div>
               <div className={classes.textualInfosBrief}>
                 {/* Name */}
                 {this.renderInformationWithLabel({
-                  title: this.state.selectedRequestForFocus.driverData["name"],
+                  title: this.state.selectedRequestForFocus?.shopperData?.name,
                   label: "Name",
                   fontSize: "16px",
                 })}
                 {/* Surname */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedRequestForFocus.driverData["surname"],
+                    this.state.selectedRequestForFocus?.shopperData?.surname,
                   label: "Surname",
                   fontSize: "16px",
                 })}
@@ -1512,15 +1443,13 @@ class Requests extends Component {
                 {/* Gender */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedRequestForFocus.driverData["gender"],
+                    this.state.selectedRequestForFocus?.shopperData?.gender,
                   label: "Gender",
                   fontSize: "16px",
                 })}
                 {/* Plate number */}
                 {this.renderInformationWithLabel({
-                  title:
-                    this.state.selectedRequestForFocus.driverData.cars_data[0]
-                      .plate_number,
+                  title: "-",
                   label: "Plate number",
                   fontSize: "16px",
                 })}
@@ -1530,7 +1459,8 @@ class Requests extends Component {
                 {/* Phone */}
                 {this.renderInformationWithLabel({
                   title:
-                    this.state.selectedRequestForFocus.driverData.phone_number,
+                    this.state.selectedRequestForFocus?.shopperData
+                      ?.phone_number,
                   label: "Phone number",
                   fontSize: "16px",
                 })}
@@ -1548,46 +1478,20 @@ class Requests extends Component {
     let fareData = requestData.totals_request;
 
     switch (requestData.ride_mode) {
-      case "RIDE":
-        return (
-          <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
-            {this.renderInformationWithLabel({
-              title: `N$${fareData.fare}`,
-              label: "Amount",
-              marginLeft: "0px",
-              color: process.env.REACT_APP_PRIMARY_COLOR,
-            })}
-
-            {/* Payment method */}
-            {this.renderInformationWithLabel({
-              title: this.getReadablePaymentMethod(requestData.payment_method),
-              label: "Payment method",
-              marginLeft: "0px",
-            })}
-          </div>
-        );
-
       case "DELIVERY":
         return (
           <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
             {this.renderInformationWithLabel({
-              title: `${fareData.total}`,
-              label: "Total",
+              title: `N$${fareData.total}`,
+              label: "Delivery fee",
               marginLeft: "0px",
               color: process.env.REACT_APP_PRIMARY_COLOR,
             })}
 
             {/* Service fee */}
             {this.renderInformationWithLabel({
-              title: fareData.service_fee,
+              title: `N$${fareData.service_fee}`,
               label: "Service fee",
-              marginLeft: "0px",
-            })}
-
-            {/* Delivery fee */}
-            {this.renderInformationWithLabel({
-              title: fareData.delivery_fee,
-              label: "Delivery fee",
               marginLeft: "0px",
             })}
           </div>
@@ -1597,7 +1501,7 @@ class Requests extends Component {
         return (
           <div className={classes.itiContainer} style={{ marginTop: "20px" }}>
             {this.renderInformationWithLabel({
-              title: `${fareData.total}`,
+              title: `N$${fareData.total}`,
               label: "Total",
               marginLeft: "0px",
               color: process.env.REACT_APP_PRIMARY_COLOR,
@@ -1605,21 +1509,21 @@ class Requests extends Component {
 
             {/* Service fee */}
             {this.renderInformationWithLabel({
-              title: fareData.service_fee,
+              title: `N$${fareData.service_fee}`,
               label: "Service fee",
               marginLeft: "0px",
             })}
 
             {/* Cart */}
             {this.renderInformationWithLabel({
-              title: fareData.cart,
+              title: `N$${fareData.cart}`,
               label: "Cart",
               marginLeft: "0px",
             })}
 
             {/* Cash pickup fee */}
             {this.renderInformationWithLabel({
-              title: fareData.cash_pickup_fee,
+              title: `N$${fareData.cash_pickup_fee}`,
               label: "Cash pickup fee",
               marginLeft: "0px",
             })}
@@ -1634,27 +1538,6 @@ class Requests extends Component {
   //Itenary: pickup destination
   renderItinary() {
     switch (this.state.selectedRequestForFocus.ride_mode) {
-      case "RIDE":
-        return (
-          <div className={classes.itiContainer}>
-            <div>
-              {this.renderLocationWithLabel({
-                locationData: [
-                  this.state.selectedRequestForFocus.locations.pickup,
-                ],
-                label: "Pickup location",
-              })}
-            </div>
-            <div>
-              {this.renderLocationWithLabel({
-                locationData:
-                  this.state.selectedRequestForFocus.locations.dropoff,
-                label: "Drop off location",
-              })}
-            </div>
-          </div>
-        );
-
       case "DELIVERY":
         return (
           <div className={classes.itiContainer}>
@@ -1735,7 +1618,7 @@ class Requests extends Component {
                   <div
                     className={classes.suburbInfoPlusLocation}
                     style={{ color: color, marginBottom: "10px" }}>
-                    <div>{location.name}</div>
+                    <div>{location?.name}</div>
                     <div
                       style={{ color: process.env.REACT_APP_SECONDARY_COLOR }}>
                       {location.phone}
