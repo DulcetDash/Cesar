@@ -116,7 +116,7 @@ class Login extends Component {
                               }
                             )
                             .then(function (response) {
-                              // console.log(response.data);
+                              console.log(response.data);
                               toast.dismiss();
                               if (
                                 response.data.response === "valid_credentials"

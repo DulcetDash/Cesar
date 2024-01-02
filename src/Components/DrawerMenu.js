@@ -7,7 +7,13 @@ import classes from "../Styles/Drawer.module.css";
 import logoWhite from "../Images/logo.png";
 import logoBlack from "../Images/logo_white.png";
 import { Home, Person, BarChart, LocalTaxi } from "@material-ui/icons";
-import { MdPrivacyTip, MdLogout, MdInfo, MdAccountBox } from "react-icons/md";
+import {
+  MdPrivacyTip,
+  MdLogout,
+  MdInfo,
+  MdAccountBox,
+  MdAccountTree,
+} from "react-icons/md";
 
 class DrawerMenu extends Component {
   constructor(props) {
@@ -90,6 +96,15 @@ class DrawerMenu extends Component {
           icon: <BarChart style={{ fontSize: "18px", marginRight: "3px" }} />,
         })}
 
+        {this.menuElement({
+          title: "Products",
+          link: "/products",
+          isSelected: /products/i.test(window.location.href),
+          icon: (
+            <MdAccountTree style={{ fontSize: "18px", marginRight: "3px" }} />
+          ),
+        })}
+
         {/* Spe */}
         <div className={classes.sepa}></div>
 
@@ -141,7 +156,7 @@ class DrawerMenu extends Component {
         })}
         {/* Copyright */}
         <div className={classes.copyright}>
-          <div>© 2023 DulcetDash.</div>
+          <div>© 2024 DulcetDash.</div>
         </div>
       </div>
     );

@@ -15,6 +15,8 @@ import Users from "./Components/Users";
 import Drivers from "./Components/Drivers";
 import Requests from "./Components/Requests";
 import Login from "./Components/Login";
+import ProductsViewer from "./Components/ProductsViewer";
+import { Toaster } from "react-hot-toast";
 
 export const transformCircular = createTransform(
   (inboundState, key) => stringify(inboundState),
@@ -36,6 +38,7 @@ let persistor = persistStore(store);
 function App() {
   return (
     <Provider store={store}>
+      <Toaster />
       <PersistGate loading={null} persistor={persistor}>
         <Switch>
           <Route path="/" exact component={Login} />
@@ -43,6 +46,7 @@ function App() {
           <Route path="/users" exact component={Users} />
           <Route path="/drivers" exact component={Drivers} />
           <Route path="/requests" exact component={Requests} />
+          <Route path="/products" exact component={ProductsViewer} />
         </Switch>
       </PersistGate>
     </Provider>
