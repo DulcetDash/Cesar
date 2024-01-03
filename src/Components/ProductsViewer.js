@@ -1,31 +1,34 @@
-import { Card, Select, Tooltip } from "antd";
+import { Card, Select } from "antd";
 import classes from "../Styles/Products.module.css";
 import DrawerMenu from "./DrawerMenu";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import ucFirst from "../Helpers/Helpers";
-import { Delete, PhotoCamera } from "@material-ui/icons";
 import Loader from "react-loader-spinner";
+import VirtualizedGrid from "./VirtualizedGrid";
 const { Meta } = Card;
 
 const ProductsViewer = () => {
   const prevStoreRef = useRef();
+  const prevProductTypeRef = useRef();
+  const scrollableDivRef = useRef(null);
 
   const [stores, setStores] = useState(null);
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedProductType, setSelectedProductType] = useState("all");
   const [products, setProducts] = useState(null);
+  const productsRef = useRef(products);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [page, setPage] = useState(1);
+  const [scrollLoading, setScrollLoading] = useState(false);
 
   const getProducts = async () => {
-    setIsLoadingProducts(true);
-
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BRIDGE}/getProducts`,
         {
           productType: selectedProductType,
           selectedStore,
+          pageNumber: page,
         }
       );
 
@@ -39,36 +42,104 @@ const ProductsViewer = () => {
         console.log(receivedProducts);
 
         setStores(receivedStores);
-        setProducts(receivedProducts);
+        setProducts((prevProducts) =>
+          prevProducts
+            ? [...prevProducts, ...receivedProducts]
+            : receivedProducts
+        );
         setSelectedStore(receivedSelectedStore);
+        setScrollLoading(false);
       }
 
       setIsLoadingProducts(false);
     } catch (error) {
       console.log(error);
       setIsLoadingProducts(false);
+      setScrollLoading(false);
     }
   };
 
   useEffect(() => {
-    getProducts();
+    setIsLoadingProducts(true);
+    // getProducts();
   }, []);
+
+  // Update the ref whenever products change
+  useEffect(() => {
+    productsRef.current = products;
+  }, [products]);
 
   useEffect(() => {
     const prevStore = prevStoreRef.current;
     prevStoreRef.current = selectedStore;
 
-    if (prevStore !== null && selectedStore !== null) {
+    const prevProductType = prevProductTypeRef.current;
+    prevProductTypeRef.current = selectedProductType;
+
+    if (
+      prevStore !== null &&
+      selectedStore !== null &&
+      prevProductType !== null &&
+      selectedProductType != null
+    ) {
       getProducts();
     }
   }, [selectedStore, selectedProductType]);
 
+  // Effect to fetch data on component mount and when page changes
+  useEffect(() => {
+    if (page !== 1) {
+      setScrollLoading(true);
+      getProducts();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  // Event listener for scroll
+  useEffect(() => {
+    const scrollableDiv = scrollableDivRef.current;
+
+    const handleScroll = () => {
+      if (!scrollableDiv) return;
+
+      const isBottom =
+        scrollableDiv.scrollHeight - scrollableDiv.scrollTop <=
+        scrollableDiv.clientHeight + 5;
+
+      const currentProducts = productsRef.current;
+
+      if (isBottom && !scrollLoading && currentProducts?.length > 0) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    if (scrollableDiv) {
+      scrollableDiv.addEventListener("scroll", handleScroll);
+    }
+
+    // Cleanup function
+    return () => {
+      if (scrollableDiv) {
+        scrollableDiv.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [scrollLoading]);
+
   const handleSelectedStore = (store) => {
+    setIsLoadingProducts(true);
+    setProducts(null);
     setSelectedStore(store);
+    setPage(1);
   };
 
   const handleSelectedProductType = (type) => {
+    setIsLoadingProducts(true);
+    setProducts(null);
     setSelectedProductType(type);
+    setPage(1);
   };
 
   const basicHeader = () => {
@@ -79,8 +150,7 @@ const ProductsViewer = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-          }}
-          onClick={() => getProducts()}>
+          }}>
           <div className={classes.headerTitle}>Products</div>
         </div>
         {/* Loader */}
@@ -101,7 +171,7 @@ const ProductsViewer = () => {
       <DrawerMenu />
 
       {/* Right */}
-      <div className={classes.contentContainer}>
+      <div className={classes.contentContainer} ref={scrollableDivRef}>
         {basicHeader()}
 
         <div
@@ -147,6 +217,7 @@ const ProductsViewer = () => {
           style={{
             padding: 20,
             marginTop: 25,
+            marginBottom: 150,
           }}>
           {isLoadingProducts ? (
             <Loader
@@ -161,84 +232,14 @@ const ProductsViewer = () => {
           ) : (
             <div
               style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "20px",
+                marginBottom: 200,
               }}>
-              {products.map((product) => {
-                return (
-                  <Card
-                    key={product?.id}
-                    bordered={false}
-                    cover={
-                      <img
-                        alt="product"
-                        src={product?.pictures?.[0]}
-                        style={{
-                          paddingTop: 15,
-                          height: "150px",
-                          width: "75%",
-                          objectFit: "contain",
-                          margin: "auto",
-                        }}
-                      />
-                    }
-                    style={{
-                      width: 220,
-                    }}>
-                    <p
-                      style={{
-                        fontWeight: "bold",
-                        height: 40,
-                      }}>
-                      {ucFirst({ stringData: product?.name })}
-                    </p>
-                    <Tooltip
-                      title={
-                        product?.description?.length > 120
-                          ? product?.description
-                          : null
-                      }>
-                      <p
-                        style={{
-                          borderBottom: "1px solid #d0d0d0",
-                          height: 120,
-                          fontSize: 12,
-                        }}>
-                        {product?.description?.length > 120
-                          ? `${product?.description.slice(0, 120)}...`
-                          : product?.description}
-                      </p>
-                    </Tooltip>
-
-                    <p
-                      style={{
-                        fontWeight: "bold",
-                        color: "#11A05A",
-                        fontSize: 17,
-                      }}>{`${product?.currency} ${product?.price}`}</p>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <Tooltip title="Change picture">
-                        <PhotoCamera
-                          style={{ fontSize: 22, cursor: "pointer" }}
-                        />
-                      </Tooltip>
-                      <Tooltip title="Delete product">
-                        <Delete
-                          style={{
-                            color: "#b22222",
-                            fontSize: 22.5,
-                            position: "relative",
-                            bottom: 1,
-                            marginLeft: 10,
-                            cursor: "pointer",
-                          }}
-                        />
-                      </Tooltip>
-                    </div>
-                  </Card>
-                );
-              })}
+              <VirtualizedGrid
+                key={selectedStore ?? "initial"}
+                items={products}
+                hideScrollbar={true}
+                isLoadingMore={scrollLoading}
+              />
             </div>
           )}
         </div>
