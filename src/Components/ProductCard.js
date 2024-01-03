@@ -34,10 +34,7 @@ const ProductCard = ({ product: productInput }) => {
     formData.append("storeId", product.meta.store_fp);
     formData.append("productId", product.id);
 
-    console.log(product);
-
     try {
-      // Replace with your upload URL
       const response = await axios.post(
         `${process.env.REACT_APP_BRIDGE}/uploadProductPicture`,
         formData,

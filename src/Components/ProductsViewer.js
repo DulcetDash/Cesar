@@ -39,8 +39,6 @@ const ProductsViewer = () => {
           selectedStore: receivedSelectedStore,
         } = response.data?.data;
 
-        console.log(receivedProducts);
-
         setStores(receivedStores);
         setProducts((prevProducts) =>
           prevProducts
