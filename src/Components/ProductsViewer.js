@@ -105,7 +105,7 @@ const ProductsViewer = () => {
 
       const isBottom =
         scrollableDiv.scrollHeight - scrollableDiv.scrollTop <=
-        scrollableDiv.clientHeight + 5;
+        scrollableDiv.clientHeight;
 
       const currentProducts = productsRef.current;
 
@@ -215,7 +215,6 @@ const ProductsViewer = () => {
           style={{
             padding: 20,
             marginTop: 25,
-            marginBottom: 150,
           }}>
           {isLoadingProducts ? (
             <Loader
@@ -230,7 +229,7 @@ const ProductsViewer = () => {
           ) : (
             <div
               style={{
-                marginBottom: 200,
+                height: "100%",
               }}>
               <VirtualizedGrid
                 key={selectedStore ?? "initial"}

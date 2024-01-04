@@ -95,31 +95,29 @@ const VirtualizedGrid = ({ items, hideScrollbar, isLoadingMore = false }) => {
       return null;
     };
 
-  return (
-    <AutoSizer key={windowSize.width}>
-      {({ width }) => {
-        const columnCount = Math.max(
-          1,
-          Math.floor((width + gapSize) / (itemWidth + gapSize))
-        );
-        const rowCount = Math.ceil(items.length / columnCount);
+  const width = 1000;
 
-        return (
-          <Grid
-            cellRenderer={cellRenderer(columnCount)}
-            columnCount={columnCount}
-            columnWidth={itemWidth + gapSize}
-            height={gridHeight}
-            rowCount={rowCount}
-            rowHeight={itemHeight + gapSize + 200} // Adjusted row height to include gap
-            width={width}
-            style={{
-              overflowY: "hidden",
-            }}
-          />
-        );
+  const columnCount = Math.max(
+    1,
+    Math.floor((width + gapSize) / (itemWidth + gapSize))
+  );
+  const rowCount = Math.ceil(items.length / columnCount);
+
+  return (
+    <Grid
+      cellRenderer={cellRenderer(columnCount)}
+      columnCount={columnCount}
+      columnWidth={itemWidth + gapSize}
+      height={gridHeight}
+      rowCount={rowCount}
+      rowHeight={itemHeight + gapSize + 200}
+      width={width}
+      style={{
+        overflowY: "hidden",
+        // backgroundColor: "pink",
+        height: "100%",
       }}
-    </AutoSizer>
+    />
   );
 };
 
