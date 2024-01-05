@@ -29,7 +29,7 @@ const VirtualizedGrid = ({ items, hideScrollbar, isLoadingMore = false }) => {
       const moduloCompensation =
         !(items.length % 2 !== 0) && items.length > 20
           ? items.length > 100
-            ? 1 / 6
+            ? 1 / 22
             : 1
           : 1.5;
 
@@ -109,6 +109,7 @@ const VirtualizedGrid = ({ items, hideScrollbar, isLoadingMore = false }) => {
       columnCount={columnCount}
       columnWidth={itemWidth + gapSize}
       height={gridHeight}
+      autoHeight={true}
       rowCount={rowCount}
       rowHeight={itemHeight + gapSize + 200}
       width={width}

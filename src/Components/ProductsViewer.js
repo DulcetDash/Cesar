@@ -206,6 +206,10 @@ const ProductsViewer = () => {
                 value: "pictureless",
                 label: "Pictureless products",
               },
+              {
+                value: "blurry",
+                label: "Blurry images",
+              },
             ]}
           />
         </div>
