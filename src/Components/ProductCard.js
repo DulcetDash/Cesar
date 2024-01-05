@@ -24,6 +24,7 @@ const ProductCard = ({ product: productInput }) => {
         title: "Confirm Upload",
         content: "Do you want to upload this image?",
         onOk: async () => await uploadImage(file),
+        onCancel: () => resetFileInput(),
       });
     }
   };
